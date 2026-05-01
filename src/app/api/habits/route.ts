@@ -1,54 +1,28 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { getUserIdFromToken } from "@/lib/auth";
+import { ok, error } from "@/lib/api";
+import { createHabit, getUserHabits } from "@/services/habit.service";
 
 export async function GET(req: NextRequest) {
-  const token = req.cookies.get("accessToken")?.value;
+  const userId = getUserIdFromToken(req.cookies.get("accessToken")?.value);
 
-  if (!token) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (!userId) return error("Unauthorized", 401);
 
-  const userId = getUserIdFromToken(token);
+  const habits = await getUserHabits(userId);
 
-  if (!userId) {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-  }
-
-  const habits = await prisma.habit.findMany({
-    where: {
-      userId: userId,
-    },
-  });
-
-  return NextResponse.json(habits);
+  return ok(habits);
 }
 
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get("accessToken")?.value;
+  const userId = getUserIdFromToken(req.cookies.get("accessToken")?.value);
 
-  if (!token) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const userId = getUserIdFromToken(token);
-
-  if (!userId) {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-  }
+  if (!userId) return error("Unauthorized", 401);
 
   const { title } = await req.json();
 
-  if (!title) {
-    return NextResponse.json({ error: "Title is required" }, { status: 400 });
-  }
+  if (!title) return error("Title required");
 
-  const habit = await prisma.habit.create({
-    data: {
-      title,
-      userId,
-    },
-  });
+  const habit = await createHabit(userId, title);
 
-  return NextResponse.json(habit);
+  return ok(habit);
 }

@@ -1,53 +1,17 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { NextRequest } from "next/server";
+import { getUserIdFromToken } from "@/lib/auth";
+import { ok, error } from "@/lib/api";
+import { getTodayStatus } from "@/services/checkin.service";
 
-function getUserId(req: NextRequest) {
-  const token = req.cookies.get("accessToken")?.value;
-  if (!token) return null;
+export async function GET(req: NextRequest, { params }: any) {
+  const userId = getUserIdFromToken(req.cookies.get("accessToken")?.value);
+
+  if (!userId) return error("Unauthorized", 401);
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
-      userId: string;
-    };
-    return payload.userId;
-  } catch {
-    return null;
+    return ok(await getTodayStatus(userId, params.id));
+  } catch (e: any) {
+    if (e.message === "NOT_FOUND") return error("Not found", 404);
+    return error("Server error", 500);
   }
-}
-
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  const userId = getUserId(req);
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const habitId = params.id;
-
-  const habit = await prisma.habit.findFirst({
-    where: { id: habitId, userId },
-  });
-
-  if (!habit) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const check = await prisma.checkIn.findUnique({
-    where: {
-      habitId_date: {
-        habitId,
-        date: today,
-      },
-    },
-  });
-
-  return NextResponse.json({
-    completed: !!check,
-  });
 }

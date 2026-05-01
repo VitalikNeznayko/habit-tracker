@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 
-export function getUserIdFromToken(token: string) {
+export function getUserIdFromToken(token?: string) {
+  if (!token) return null;
+
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
       userId: string;

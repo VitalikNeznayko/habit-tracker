@@ -1,70 +1,22 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-
-function getUserId(req: NextRequest) {
-  const token = req.cookies.get("accessToken")?.value;
-
-  if (!token) return null;
-
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
-      userId: string;
-    };
-
-    return payload.userId;
-  } catch {
-    return null;
-  }
-}
+import { NextRequest } from "next/server";
+import { getUserIdFromToken } from "@/lib/auth";
+import { ok, error } from "@/lib/api";
+import { toggleCheckIn } from "@/services/checkin.service";
 
 export async function POST(req: NextRequest) {
-  const userId = getUserId(req);
+  const userId = getUserIdFromToken(req.cookies.get("accessToken")?.value);
 
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (!userId) return error("Unauthorized", 401);
 
   const { habitId } = await req.json();
 
-  if (!habitId) {
-    return NextResponse.json({ error: "habitId required" }, { status: 400 });
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  if (!habitId) return error("habitId required");
 
   try {
-    const existing = await prisma.checkIn.findUnique({
-      where: {
-        habitId_date: {
-          habitId,
-          date: today,
-        },
-      },
-    });
-
-    if (existing) {
-      await prisma.checkIn.delete({
-        where: {
-          id: existing.id,
-        },
-      });
-
-      return NextResponse.json({ completed: false });
-    }
-
-    await prisma.checkIn.create({
-      data: {
-        habitId,
-        date: today,
-        completed: true,
-      },
-    });
-
-    return NextResponse.json({ completed: true });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: "Check-in failed" }, { status: 500 });
+    const result = await toggleCheckIn(userId, habitId);
+    return ok(result);
+  } catch (e: any) {
+    if (e.message === "NOT_FOUND") return error("Not found", 404);
+    return error("Server error", 500);
   }
 }

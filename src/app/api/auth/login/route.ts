@@ -32,12 +32,16 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       maxAge: 60 * 15,
       path: "/",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
     });
 
     response.cookies.set("refreshToken", newRefreshToken, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
     });
 
     return response;
