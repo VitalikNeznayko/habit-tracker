@@ -1,66 +1,47 @@
-import { prisma } from "@/lib/prisma";
-import bcrypt from "bcrypt";
+import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const refreshToken = req.cookies.get("refreshToken")?.value;
+
+  if (!refreshToken) {
+    return NextResponse.json({ error: "No token" }, { status: 401 });
+  }
+
   try {
-    const { email, password } = await req.json();
+    const payload = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET!,
+    ) as { userId: string };
 
-    if (!email || !password) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-    }
+    const newAccessToken = jwt.sign(
+      { userId: payload.userId },
+      process.env.JWT_SECRET!,
+      { expiresIn: "15m" },
+    );
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 },
-      );
-    }
-
-    const isValid = await bcrypt.compare(password, user.password);
-
-    if (!isValid) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 },
-      );
-    }
-
-    // 🔑 access token
-    const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: "15m",
-    });
-
-    // ♻️ refresh token
-    const refreshToken = jwt.sign(
-      { userId: user.id },
+    const newRefreshToken = jwt.sign(
+      { userId: payload.userId },
       process.env.JWT_REFRESH_SECRET!,
       { expiresIn: "7d" },
     );
 
-    // 🔥 ПРАВИЛЬНИЙ response
-    const response = NextResponse.json({ message: "Logged in" });
+    const response = NextResponse.json({ message: "Refreshed" });
 
-    response.cookies.set("accessToken", accessToken, {
+    response.cookies.set("accessToken", newAccessToken, {
       httpOnly: true,
       maxAge: 60 * 15,
       path: "/",
     });
 
-    response.cookies.set("refreshToken", refreshToken, {
+    response.cookies.set("refreshToken", newRefreshToken, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
 
     return response;
-  } catch (e) {
-    console.error("LOGIN ERROR:", e);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 }

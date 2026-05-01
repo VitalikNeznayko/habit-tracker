@@ -9,7 +9,7 @@ export async function proxy(req: NextRequest) {
   if (accessToken) {
     try {
       jwt.verify(accessToken, process.env.JWT_SECRET!);
-      return NextResponse.next();
+      return NextResponse.next(); 
     } catch {
     }
   }
@@ -31,16 +31,15 @@ export async function proxy(req: NextRequest) {
 
       response.cookies.set("accessToken", newAccessToken, {
         httpOnly: true,
-        maxAge: 900,
+        maxAge: 60 * 15,
         path: "/",
       });
 
       return response;
     } catch {
-      return NextResponse.redirect(new URL("/login", req.url));
+
     }
   }
-
   return NextResponse.redirect(new URL("/login", req.url));
 }
 
