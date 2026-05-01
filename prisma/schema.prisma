@@ -4,26 +4,32 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
 }
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   habits Habit[]
 }
 
 model Habit {
-  id        String   @id @default(uuid())
-  title     String
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   userId String
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   checkins CheckIn[]
+
+  @@index([userId])
 }
 
 model CheckIn {
@@ -31,8 +37,11 @@ model CheckIn {
   date      DateTime
   completed Boolean  @default(true)
 
+  createdAt DateTime @default(now())
+
   habitId String
-  habit   Habit @relation(fields: [habitId], references: [id])
+  habit   Habit @relation(fields: [habitId], references: [id], onDelete: Cascade)
 
   @@unique([habitId, date])
+  @@index([habitId])
 }
