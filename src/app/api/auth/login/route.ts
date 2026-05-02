@@ -1,51 +1,50 @@
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { NextResponse } from "next/server";
+import { loginSchema } from "@/lib/validators";
+import { loginUser } from "@/services/auth.service";
+import { setAuthCookies } from "@/lib/tokens";
 
-export async function POST(req: NextRequest) {
-  const refreshToken = req.cookies.get("refreshToken")?.value;
-
-  if (!refreshToken) {
-    return NextResponse.json({ error: "No token" }, { status: 401 });
-  }
-
+export async function POST(req: Request) {
   try {
-    const payload = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET!,
-    ) as { userId: string };
+    const body = await req.json();
+    const parsed = loginSchema.safeParse(body);
 
-    const newAccessToken = jwt.sign(
-      { userId: payload.userId },
-      process.env.JWT_SECRET!,
-      { expiresIn: "15m" },
-    );
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0].message },
+        { status: 400 },
+      );
+    }
 
-    const newRefreshToken = jwt.sign(
-      { userId: payload.userId },
-      process.env.JWT_REFRESH_SECRET!,
-      { expiresIn: "7d" },
-    );
+    const { email, password } = parsed.data;
 
-    const response = NextResponse.json({ message: "Refreshed" });
+    try {
+      const { user, accessToken, refreshToken } = await loginUser(
+        email,
+        password,
+      );
 
-    response.cookies.set("accessToken", newAccessToken, {
-      httpOnly: true,
-      maxAge: 60 * 15,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-    });
+      const response = NextResponse.json({
+        message: "Logged in",
+        id: user.id,
+        email: user.email,
+      });
 
-    response.cookies.set("refreshToken", newRefreshToken, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-    });
+      setAuthCookies(response, accessToken, refreshToken);
 
-    return response;
-  } catch {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      return response;
+    } catch (e: any) {
+      if (e.message === "INVALID_CREDENTIALS") {
+        return NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 401 },
+        );
+      }
+
+      throw e;
+    }
+  } catch (e) {
+    console.error("LOGIN ERROR:", e);
+
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

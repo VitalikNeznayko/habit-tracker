@@ -1,68 +1,46 @@
-import { prisma } from "@/lib/prisma";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
+import { registerSchema } from "@/lib/validators";
+import { registerUser } from "@/services/auth.service";
+import { setAuthCookies } from "@/lib/tokens";
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    const body = await req.json();
+    const parsed = registerSchema.safeParse(body);
 
-    if (!email || !password) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "User already exists" },
+        { error: parsed.error.issues[0].message },
         { status: 400 },
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const { email, password } = parsed.data;
 
-    const user = await prisma.user.create({
-      data: {
+    try {
+      const { user, accessToken, refreshToken } = await registerUser(
         email,
-        password: hashedPassword,
-      },
-    });
+        password,
+      );
 
-    const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: "15m",
-    });
+      const response = NextResponse.json({
+        id: user.id,
+        email: user.email,
+      });
 
-    const refreshToken = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_REFRESH_SECRET!,
-      { expiresIn: "7d" },
-    );
+      setAuthCookies(response, accessToken, refreshToken);
 
-    const response = NextResponse.json({
-      id: user.id,
-      email: user.email,
-    });
+      return response;
+    } catch (e: any) {
+      if (e.message === "USER_EXISTS") {
+        return NextResponse.json(
+          { error: "User already exists" },
+          { status: 400 },
+        );
+      }
 
-    response.cookies.set("accessToken", accessToken, {
-      httpOnly: true,
-      maxAge: 60 * 15,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-    });
-
-    response.cookies.set("refreshToken", refreshToken, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-    });
-
-    return response;
+      throw e;
+    }
   } catch (e) {
     console.error("REGISTER ERROR:", e);
 

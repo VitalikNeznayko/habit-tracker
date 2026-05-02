@@ -24,14 +24,14 @@ export async function proxy(req: NextRequest) {
       const newAccessToken = jwt.sign(
         { userId: payload.userId },
         process.env.JWT_SECRET!,
-        { expiresIn: "15m" },
+        { expiresIn: "10m" },
       );
 
       const response = NextResponse.next();
 
       response.cookies.set("accessToken", newAccessToken, {
         httpOnly: true,
-        maxAge: 60 * 15,
+        maxAge: 60 * 10,
         path: "/",
       });
 
