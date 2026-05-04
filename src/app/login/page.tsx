@@ -4,46 +4,31 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
 
-  async function handleRegister() {
-    if (!email || !password) {
-      alert("Fill all fields");
+  async function login() {
+    setLoading(true);
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) {
+      alert("Invalid credentials");
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.error || "Register failed");
-        return;
-      }
-
-      // Cookies are set after registration, so the user can enter the app.
-      router.push("/dashboard");
-    } catch (e) {
-      console.error("REGISTER ERROR:", e);
-      alert("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+    router.push("/dashboard");
   }
 
   return (
@@ -52,11 +37,9 @@ export default function RegisterPage() {
         <Link href="/" className="text-sm font-semibold text-[#6e7f72]">
           Habit Tracker
         </Link>
-        <h1 className="mt-5 text-3xl font-bold tracking-tight">
-          Create account
-        </h1>
+        <h1 className="mt-5 text-3xl font-bold">Welcome back</h1>
         <p className="mt-2 text-sm leading-6 text-[#6e7f72]">
-          Start with one habit today. You can add more once your rhythm is set.
+          Log in to check off today&apos;s habits and keep your streaks moving.
         </p>
 
         <input
@@ -75,17 +58,17 @@ export default function RegisterPage() {
         />
 
         <button
-          onClick={handleRegister}
+          onClick={login}
           disabled={loading}
           className="mt-5 w-full rounded-md bg-[#17201b] py-3 text-sm font-semibold text-white transition hover:bg-[#28352d]"
         >
-          {loading ? "Creating..." : "Create account"}
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         <p className="mt-4 text-center text-sm text-[#6e7f72]">
-          Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-[#2f6f45]">
-            Login
+          New here?{" "}
+          <Link href="/register" className="font-semibold text-[#2f6f45]">
+            Create account
           </Link>
         </p>
       </div>

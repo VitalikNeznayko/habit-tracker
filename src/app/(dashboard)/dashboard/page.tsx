@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [todayMap, setTodayMap] = useState<Record<string, boolean>>({});
   const [streakMap, setStreakMap] = useState<Record<string, number>>({});
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   async function loadData() {
     const res = await fetch("/api/habits");
@@ -42,7 +43,12 @@ export default function Dashboard() {
       }),
     );
 
-    return { unauthorized: false as const, habits: data as Habit[], today, streak };
+    return {
+      unauthorized: false as const,
+      habits: data as Habit[],
+      today,
+      streak,
+    };
   }
 
   async function refresh() {
@@ -94,11 +100,12 @@ export default function Dashboard() {
 
     await fetch("/api/habits", {
       method: "POST",
-      body: JSON.stringify({ title }),
+      body: JSON.stringify({ title, description }),
       headers: { "Content-Type": "application/json" },
     });
 
     setTitle("");
+    setDescription("");
     refresh();
   }
 
@@ -121,19 +128,27 @@ export default function Dashboard() {
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#6e7f72]">
+            <p className="text-sm font-semibold uppercase text-[#6e7f72]">
               Dashboard
             </p>
-            <h1 className="mt-2 text-4xl font-bold tracking-tight">
+            <h1 className="mt-2 text-4xl font-bold">
               Today habits
             </h1>
           </div>
-          <button
-            onClick={logout}
-            className="w-fit rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
-          >
-            Logout
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/profile"
+              className="rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
+            >
+              Profile
+            </Link>
+            <button
+              onClick={logout}
+              className="w-fit rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
+            >
+              Logout
+            </button>
+          </div>
         </header>
 
         <section className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -154,7 +169,7 @@ export default function Dashboard() {
         </section>
 
         <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm">
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="grid gap-3 lg:grid-cols-[1fr_1.3fr_auto]">
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -162,7 +177,16 @@ export default function Dashboard() {
                 if (e.key === "Enter") addHabit();
               }}
               placeholder="New habit..."
-              className="min-h-11 flex-1 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+              className="min-h-11 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+            />
+            <input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") addHabit();
+              }}
+              placeholder="Description or trigger..."
+              className="min-h-11 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
             />
             <button
               onClick={addHabit}
@@ -215,7 +239,8 @@ export default function Dashboard() {
                         {habit.title}
                       </h2>
                       <p className="text-sm text-[#6e7f72]">
-                        {done ? "Completed today" : "Waiting for today"}
+                        {habit.description ||
+                          (done ? "Completed today" : "Waiting for today")}
                       </p>
                     </div>
                   </div>
