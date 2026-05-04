@@ -1,11 +1,9 @@
 import Link from "next/link";
-import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 type User = {
   id: string;
   email: string;
 };
-
 
 function navClass(active: boolean) {
   return active
@@ -13,7 +11,15 @@ function navClass(active: boolean) {
     : "rounded-md px-4 py-2 text-sm font-semibold text-[#526056] transition hover:bg-white hover:text-[#17201b]";
 }
 
-function Header({ setUser, isLoggedIn, loaded }: { setUser: (user: User | null) => void; isLoggedIn: boolean; loaded: boolean }) {
+function Header({
+  setUser,
+  isLoggedIn,
+  loaded,
+}: {
+  setUser: (user: User | null) => void;
+  isLoggedIn: boolean;
+  loaded: boolean;
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -30,12 +36,6 @@ function Header({ setUser, isLoggedIn, loaded }: { setUser: (user: User | null) 
         </Link>
 
         <div className="flex flex-wrap items-center justify-end gap-2">
-          <Link
-            href="/dashboard"
-            className={navClass(pathname === "/dashboard")}
-          >
-            Dashboard
-          </Link>
           {isLoggedIn ? (
             <>
               <Link
@@ -53,6 +53,12 @@ function Header({ setUser, isLoggedIn, loaded }: { setUser: (user: User | null) 
             </>
           ) : loaded ? (
             <>
+              <Link
+                href="/dashboard"
+                className={navClass(pathname === "/dashboard")}
+              >
+                Dashboard
+              </Link>
               <Link
                 href="/login"
                 className="rounded-md px-4 py-2 text-sm font-semibold text-[#435248] transition hover:bg-white hover:text-[#17201b]"

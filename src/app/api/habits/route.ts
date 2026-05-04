@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { getUserIdFromToken } from "@/lib/auth";
 import { ok, error } from "@/lib/api";
-import { createHabit, getUserHabits } from "@/services/habit.service";
+import { createHabit, getUserHabitsWithStats } from "@/services/habit.service";
 import { createHabitSchema } from "@/lib/validators";
 
 export async function GET(req: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
 
   if (!userId) return error("Unauthorized", 401);
 
-  const habits = await getUserHabits(userId);
+  const habits = await getUserHabitsWithStats(userId);
   return ok(habits);
 }
 

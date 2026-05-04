@@ -3,7 +3,7 @@ import { getUserIdFromToken } from "@/lib/auth";
 import { ok, error } from "@/lib/api";
 import { updateHabit, deleteHabit } from "@/services/habit.service";
 import { idParamSchema, updateHabitSchema } from "@/lib/validators";
-import { getHabitById } from "@/services/habit.service";
+import { getHabitByIdWithStats } from "@/services/habit.service";
 
 export async function PUT(
   req: NextRequest,
@@ -93,7 +93,7 @@ export async function GET(
   }
 
   try {
-    const habit = await getHabitById(userId, parsedParams.data.id);
+    const habit = await getHabitByIdWithStats(userId, parsedParams.data.id);
     return ok(habit);
   } catch (e: unknown) {
     if (e instanceof Error && e.message === "NOT_FOUND") {

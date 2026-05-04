@@ -9,13 +9,13 @@ type Habit = {
   id: string;
   title: string;
   description?: string | null;
+  todayCompleted: boolean;
+  currentStreak: number;
 };
 
 export default function Dashboard() {
   const router = useRouter();
   const [habits, setHabits] = useState<Habit[]>([]);
-  const [todayMap, setTodayMap] = useState<Record<string, boolean>>({});
-  const [streakMap, setStreakMap] = useState<Record<string, number>>({});
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
@@ -26,29 +26,11 @@ export default function Dashboard() {
       return { unauthorized: true as const };
     }
 
-    const data = await res.json();
-    const today: Record<string, boolean> = {};
-    const streak: Record<string, number> = {};
-
-    await Promise.all(
-      data.map(async (habit: Habit) => {
-        const todayRes = await fetch(`/api/habits/${habit.id}/today`).then(
-          (r) => r.json(),
-        );
-        const streakRes = await fetch(`/api/habits/${habit.id}/streak`).then(
-          (r) => r.json(),
-        );
-
-        today[habit.id] = todayRes.completed;
-        streak[habit.id] = streakRes.streak;
-      }),
-    );
+    const data = (await res.json()) as Habit[];
 
     return {
       unauthorized: false as const,
-      habits: data as Habit[],
-      today,
-      streak,
+      habits: data,
     };
   }
 
@@ -61,8 +43,6 @@ export default function Dashboard() {
     }
 
     setHabits(data.habits);
-    setTodayMap(data.today);
-    setStreakMap(data.streak);
   }
 
   useEffect(() => {
@@ -77,8 +57,6 @@ export default function Dashboard() {
       }
 
       setHabits(data.habits);
-      setTodayMap(data.today);
-      setStreakMap(data.streak);
     });
 
     return () => {
@@ -110,9 +88,9 @@ export default function Dashboard() {
     refresh();
   }
 
-  const completedToday = habits.filter((habit) => todayMap[habit.id]).length;
+  const completedToday = habits.filter((habit) => habit.todayCompleted).length;
   const longestStreak = habits.reduce(
-    (max, habit) => Math.max(max, streakMap[habit.id] || 0),
+    (max, habit) => Math.max(max, habit.currentStreak || 0),
     0,
   );
   const completionPercent = habits.length
@@ -181,7 +159,7 @@ export default function Dashboard() {
             </div>
           ) : (
             habits.map((habit) => {
-              const done = todayMap[habit.id];
+              const done = habit.todayCompleted;
 
               return (
                 <article
@@ -221,7 +199,7 @@ export default function Dashboard() {
 
                   <div className="flex items-center justify-between gap-3 sm:justify-end">
                     <span className="rounded-md bg-[#eef3ef] px-3 py-2 text-sm font-semibold text-[#3c493f]">
-                      {streakMap[habit.id] || 0} day streak
+                      {habit.currentStreak || 0} day streak
                     </span>
                     <Link
                       href={`/habit/${habit.id}`}

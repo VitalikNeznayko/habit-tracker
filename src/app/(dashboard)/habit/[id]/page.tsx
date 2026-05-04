@@ -8,6 +8,10 @@ type Habit = {
   id: string;
   title: string;
   description?: string | null;
+  todayCompleted: boolean;
+  currentStreak: number;
+  longestStreak: number;
+  progressPercent: number;
 };
 
 export default function HabitPage() {
@@ -33,31 +37,15 @@ export default function HabitPage() {
       return { unauthorized: true as const };
     }
 
-    const habitData = await res.json();
-
-    const todayRes = await fetch(`/api/habits/${habitId}/today`).then((r) =>
-      r.json(),
-    );
-
-    const streakRes = await fetch(`/api/habits/${habitId}/streak`).then((r) =>
-      r.json(),
-    );
-
-    const longestRes = await fetch(
-      `/api/habits/${habitId}/longest-streak`,
-    ).then((r) => r.json());
-
-    const progressRes = await fetch(
-      `/api/habits/${habitId}/progress`,
-    ).then((r) => r.json());
+    const habitData = (await res.json()) as Habit;
 
     return {
       unauthorized: false as const,
-      habit: habitData as Habit,
-      today: Boolean(todayRes.completed),
-      streak: Number(streakRes.streak || 0),
-      longest: Number(longestRes.longestStreak || 0),
-      progress: Number(progressRes.percent || 0),
+      habit: habitData,
+      today: Boolean(habitData.todayCompleted),
+      streak: Number(habitData.currentStreak || 0),
+      longest: Number(habitData.longestStreak || 0),
+      progress: Number(habitData.progressPercent || 0),
     };
   }, []);
 
