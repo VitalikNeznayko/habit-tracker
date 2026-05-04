@@ -2,16 +2,24 @@ import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
 export function generateTokens(userId: string) {
-  const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET!, {
+  const JWT_SECRET = process.env.JWT_SECRET;
+  const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+
+  if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
+    throw new Error("JWT secrets are not defined");
+  }
+
+  const accessToken = jwt.sign({ userId }, JWT_SECRET, {
     expiresIn: "10m",
   });
 
-  const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!, {
+  const refreshToken = jwt.sign({ userId }, JWT_REFRESH_SECRET, {
     expiresIn: "7d",
   });
 
   return { accessToken, refreshToken };
 }
+
 
 export function setAuthCookies(
   response: NextResponse,

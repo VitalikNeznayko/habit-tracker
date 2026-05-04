@@ -14,6 +14,11 @@ export default function LayoutComponent({
 }: {
   children: React.ReactNode;
 }) {
+  useEffect(() => {
+    fetch("/api/auth/refresh", {
+      method: "POST",
+    });
+  }, []); 
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [loaded, setLoaded] = useState(false);
