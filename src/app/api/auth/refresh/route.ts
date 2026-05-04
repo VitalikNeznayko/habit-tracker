@@ -29,3 +29,4 @@ export async function POST(req: NextRequest) {
     return error("Server error", 500);
   }
 }
+export const dynamic = "force-dynamic";

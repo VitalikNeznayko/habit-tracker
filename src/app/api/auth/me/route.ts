@@ -22,3 +22,4 @@ export async function GET(req: NextRequest) {
 
   return ok(user);
 }
+export const dynamic = "force-dynamic";

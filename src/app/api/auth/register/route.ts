@@ -41,3 +41,4 @@ export async function POST(req: Request) {
     return error("Server error", 500);
   }
 }
+export const dynamic = "force-dynamic";
