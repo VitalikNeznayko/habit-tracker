@@ -26,10 +26,13 @@ export async function GET(
   try {
     const result = await getTodayStatus(userId, id);
     return ok(result);
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("GET TODAY ERROR:", e);
 
-    if (e.message === "NOT_FOUND") return error("Not found", 404);
+    if (e instanceof Error && e.message === "NOT_FOUND") {
+      return error("Not found", 404);
+    }
+
     return error("Server error", 500);
   }
 }

@@ -145,7 +145,7 @@ export async function getCurrentStreak(userId: string, habitId: string) {
   });
 
   let streak = 0;
-  let currentDate = new Date();
+  const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
 
   for (const check of checkins) {

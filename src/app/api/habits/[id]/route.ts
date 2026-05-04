@@ -2,7 +2,8 @@ import { NextRequest } from "next/server";
 import { getUserIdFromToken } from "@/lib/auth";
 import { ok, error } from "@/lib/api";
 import { updateHabit, deleteHabit } from "@/services/habit.service";
-import { updateHabitSchema } from "@/lib/validators";
+import { idParamSchema, updateHabitSchema } from "@/lib/validators";
+import { getHabitById } from "@/services/habit.service";
 
 export async function PUT(
   req: NextRequest,
@@ -13,9 +14,12 @@ export async function PUT(
 
   if (!userId) return error("Unauthorized", 401);
 
-  const { id } = await context.params; 
+  const params = await context.params;
+  const parsedParams = idParamSchema.safeParse(params);
 
-  if (!id) return error("Invalid id", 400);
+  if (!parsedParams.success) {
+    return error(parsedParams.error.issues[0].message, 400);
+  }
 
   const body = await req.json();
   const parsed = updateHabitSchema.safeParse(body);
@@ -27,35 +31,75 @@ export async function PUT(
   try {
     const habit = await updateHabit(
       userId,
-      id,
+      parsedParams.data.id,
       parsed.data.title,
       parsed.data.description,
     );
 
     return ok(habit);
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("UPDATE ERROR:", e);
 
-    if (e.message === "NOT_FOUND") return error("Not found", 404);
+    if (e instanceof Error && e.message === "NOT_FOUND") {
+      return error("Not found", 404);
+    }
 
-    return error(e.message || "Server error", 500);
+    return error(e instanceof Error ? e.message : "Server error", 500);
   }
 }
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   const token = req.cookies.get("accessToken")?.value;
   const userId = getUserIdFromToken(token);
 
   if (!userId) return error("Unauthorized", 401);
 
+  const params = await context.params;
+  const parsedParams = idParamSchema.safeParse(params);
+
+  if (!parsedParams.success) {
+    return error(parsedParams.error.issues[0].message, 400);
+  }
+
   try {
-    const result = await deleteHabit(userId, params.id);
+    const result = await deleteHabit(userId, parsedParams.data.id);
     return ok(result);
-  } catch (e: any) {
-    if (e.message === "NOT_FOUND") return error("Not found", 404);
+  } catch (e: unknown) {
+    if (e instanceof Error && e.message === "NOT_FOUND") {
+      return error("Not found", 404);
+    }
+
+    return error("Server error", 500);
+  }
+}
+
+export async function GET(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> },
+) {
+  const token = req.cookies.get("accessToken")?.value;
+  const userId = getUserIdFromToken(token);
+
+  if (!userId) return error("Unauthorized", 401);
+
+  const params = await context.params;
+  const parsedParams = idParamSchema.safeParse(params);
+
+  if (!parsedParams.success) {
+    return error(parsedParams.error.issues[0].message, 400);
+  }
+
+  try {
+    const habit = await getHabitById(userId, parsedParams.data.id);
+    return ok(habit);
+  } catch (e: unknown) {
+    if (e instanceof Error && e.message === "NOT_FOUND") {
+      return error("Not found", 404);
+    }
+
     return error("Server error", 500);
   }
 }

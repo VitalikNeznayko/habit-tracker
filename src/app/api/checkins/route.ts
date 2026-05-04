@@ -21,8 +21,11 @@ export async function POST(req: NextRequest) {
     const result = await toggleCheckIn(userId, parsed.data.habitId);
 
     return ok(result);
-  } catch (e: any) {
-    if (e.message === "NOT_FOUND") return error("Not found", 404);
+  } catch (e: unknown) {
+    if (e instanceof Error && e.message === "NOT_FOUND") {
+      return error("Not found", 404);
+    }
+
     return error("Server error", 500);
   }
 }

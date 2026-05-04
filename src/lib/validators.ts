@@ -23,7 +23,7 @@ const descriptionSchema = z
   .trim()
   .max(500, "Description is too long")
   .optional()
-  .or(z.literal("")); 
+  .or(z.literal(""));
 
 const uuidSchema = z.string().uuid("Invalid UUID");
 

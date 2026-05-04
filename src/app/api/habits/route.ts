@@ -27,7 +27,11 @@ export async function POST(req: NextRequest) {
     return error(parsed.error.issues[0].message, 400);
   }
 
-  const habit = await createHabit(userId, parsed.data.title);
+  const habit = await createHabit(
+    userId,
+    parsed.data.title,
+    parsed.data.description,
+  );
 
   return ok(habit);
 }

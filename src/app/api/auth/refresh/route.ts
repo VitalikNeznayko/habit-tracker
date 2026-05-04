@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { error, ok } from "@/lib/api";
 import { refreshUser } from "@/services/auth.service";
 import { setAuthCookies } from "@/lib/tokens";
 
@@ -6,28 +7,25 @@ export async function POST(req: NextRequest) {
   const refreshToken = req.cookies.get("refreshToken")?.value;
 
   if (!refreshToken) {
-    return NextResponse.json({ error: "No refresh token" }, { status: 401 });
+    return error("No refresh token", 401);
   }
 
   try {
     const { accessToken, refreshToken: newRefreshToken } =
       refreshUser(refreshToken);
 
-    const response = NextResponse.json({
+    const response = ok({
       message: "Token refreshed",
     });
 
     setAuthCookies(response, accessToken, newRefreshToken);
 
     return response;
-  } catch (e: any) {
-    if (e.message === "INVALID_TOKEN") {
-      return NextResponse.json(
-        { error: "Invalid refresh token" },
-        { status: 401 },
-      );
+  } catch (e: unknown) {
+    if (e instanceof Error && e.message === "INVALID_TOKEN") {
+      return error("Invalid refresh token", 401);
     }
 
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return error("Server error", 500);
   }
 }

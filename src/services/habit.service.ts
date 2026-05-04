@@ -1,9 +1,14 @@
 import { prisma } from "@/lib/prisma";
 
-export async function createHabit(userId: string, title: string) {
+export async function createHabit(
+  userId: string,
+  title: string,
+  description?: string,
+) {
   return prisma.habit.create({
     data: {
       title,
+      description,
       userId,
     },
   });
@@ -50,4 +55,19 @@ export async function deleteHabit(userId: string, habitId: string) {
   });
 
   return { success: true };
+}
+
+export async function getHabitById(userId: string, habitId: string) {
+  const habit = await prisma.habit.findFirst({
+    where: {
+      id: habitId,
+      userId,
+    },
+  });
+
+  if (!habit) {
+    throw new Error("NOT_FOUND");
+  }
+
+  return habit;
 }
