@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import DashboardStats from "@/components/DashboardStats/DashboardStats";
 
 type Habit = {
   id: string;
@@ -109,14 +110,9 @@ export default function Dashboard() {
     refresh();
   }
 
-  async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.replace("/login");
-  }
-
   const completedToday = habits.filter((habit) => todayMap[habit.id]).length;
-  const totalStreak = habits.reduce(
-    (sum, habit) => sum + (streakMap[habit.id] || 0),
+  const longestStreak = habits.reduce(
+    (max, habit) => Math.max(max, streakMap[habit.id] || 0),
     0,
   );
   const completionPercent = habits.length
@@ -124,49 +120,27 @@ export default function Dashboard() {
     : 0;
 
   return (
-    <main className="min-h-screen bg-[#f6f7f4] px-5 py-6 text-[#17201b] sm:px-8">
-      <div className="mx-auto max-w-6xl">
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase text-[#6e7f72]">
-              Dashboard
-            </p>
-            <h1 className="mt-2 text-4xl font-bold">
-              Today habits
-            </h1>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href="/profile"
-              className="rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
-            >
-              Profile
-            </Link>
-            <button
-              onClick={logout}
-              className="w-fit rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
-            >
-              Logout
-            </button>
-          </div>
-        </header>
+    <main className="bg-[#f6f7f4] text-[#17201b]">
+      <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8">
+        <div className="gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm font-semibold uppercase text-[#6e7f72]">
+            Dashboard
+          </p>
+          <h1 className="mt-2 text-4xl font-bold">Today habits</h1>
+        </div>  
 
-        <section className="mt-8 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm">
-            <p className="text-sm font-medium text-[#6e7f72]">Completed</p>
-            <p className="mt-2 text-3xl font-bold">
-              {completedToday}/{habits.length}
-            </p>
-          </div>
-          <div className="rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm">
-            <p className="text-sm font-medium text-[#6e7f72]">Daily score</p>
-            <p className="mt-2 text-3xl font-bold">{completionPercent}%</p>
-          </div>
-          <div className="rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm">
-            <p className="text-sm font-medium text-[#6e7f72]">Total streak</p>
-            <p className="mt-2 text-3xl font-bold">{totalStreak} days</p>
-          </div>
-        </section>
+        <div className="mt-8">
+          <DashboardStats
+            stats={[
+              {
+                label: "Completed",
+                value: `${completedToday}/${habits.length}`,
+              },
+              { label: "Daily score", value: `${completionPercent}%` },
+              { label: "Longest streak", value: `${longestStreak} days` },
+            ]}
+          />
+        </div>
 
         <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm">
           <div className="grid gap-3 lg:grid-cols-[1fr_1.3fr_auto]">
@@ -228,7 +202,7 @@ export default function Dashboard() {
                           : "border-[#cbd4cc] bg-white text-transparent hover:border-[#3b8f55]"
                       }`}
                     >
-                      OK
+                      ✓
                     </button>
                     <div className="min-w-0">
                       <h2

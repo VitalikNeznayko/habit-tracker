@@ -1,3 +1,4 @@
+import LayoutComponent from "@/components/LayoutComponent/LayoutComponent";
 import "./globals.css";
 import type { Metadata } from "next";
 
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="uk">
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="flex min-h-screen flex-col antialiased">
+        <LayoutComponent>{children}</LayoutComponent>
+      </body>
     </html>
   );
 }

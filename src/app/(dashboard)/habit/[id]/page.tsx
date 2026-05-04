@@ -168,22 +168,14 @@ export default function HabitPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f7f4] px-5 py-6 text-[#17201b] sm:px-8">
-      <div className="mx-auto max-w-4xl">
-        <nav className="flex flex-wrap items-center justify-between gap-3">
-          <Link
-            href="/dashboard"
-            className="inline-flex rounded-md border border-[#cbd4cc] bg-white px-3 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
-          >
-            Back to dashboard
-          </Link>
-          <Link
-            href="/profile"
-            className="inline-flex rounded-md px-3 py-2 text-sm font-semibold text-[#3c493f] transition hover:bg-white"
-          >
-            Profile
-          </Link>
-        </nav>
+    <main className="bg-[#f6f7f4] text-[#17201b]">
+      <div className="mx-auto max-w-4xl px-5 py-6 sm:px-8">
+        <Link
+          href="/dashboard"
+          className="inline-flex rounded-md border border-[#cbd4cc] bg-white px-3 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
+        >
+          Back to dashboard
+        </Link>
 
         <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm sm:p-7">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">

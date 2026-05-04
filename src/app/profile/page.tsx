@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import DashboardStats from "@/components/DashboardStats/DashboardStats";
 
 type UserProfile = {
   id: string;
@@ -35,7 +36,9 @@ export default function ProfilePage() {
     }
 
     const user = (await userRes.json()) as UserProfile;
-    const habits = (await fetch("/api/habits").then((r) => r.json())) as Habit[];
+    const habits = (await fetch("/api/habits").then((r) =>
+      r.json(),
+    )) as Habit[];
 
     let completedToday = 0;
     let totalStreak = 0;
@@ -87,11 +90,6 @@ export default function ProfilePage() {
     };
   }, [router]);
 
-  async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.replace("/login");
-  }
-
   if (!profile) {
     return (
       <main className="grid min-h-screen place-items-center bg-[#f6f7f4] px-5 text-[#17201b]">
@@ -112,30 +110,14 @@ export default function ProfilePage() {
     : 0;
 
   return (
-    <main className="min-h-screen bg-[#f6f7f4] px-5 py-6 text-[#17201b] sm:px-8">
-      <div className="mx-auto max-w-6xl">
+    <main className="bg-[#f6f7f4] text-[#17201b]">
+      <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase text-[#6e7f72]">
               Profile
             </p>
-            <h1 className="mt-2 text-4xl font-bold">
-              Your habit space
-            </h1>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href="/dashboard"
-              className="rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
-            >
-              Dashboard
-            </Link>
-            <button
-              onClick={logout}
-              className="rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
-            >
-              Logout
-            </button>
+            <h1 className="mt-2 text-4xl font-bold">Your habit space</h1>
           </div>
         </header>
 
@@ -148,30 +130,19 @@ export default function ProfilePage() {
               {profile.user.email}
             </h2>
             <p className="mt-2 text-sm text-[#6e7f72]">Joined {joinedAt}</p>
-            <p className="mt-5 rounded-md bg-[#fbfcfa] px-3 py-3 text-xs text-[#6e7f72]">
-              User ID: {profile.user.id}
-            </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
-              <p className="text-sm font-medium text-[#6e7f72]">Habits</p>
-              <p className="mt-2 text-4xl font-bold">{profile.habits.length}</p>
-            </div>
-            <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
-              <p className="text-sm font-medium text-[#6e7f72]">
-                Completed today
-              </p>
-              <p className="mt-2 text-4xl font-bold">
-                {profile.completedToday}
-              </p>
-            </div>
-            <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
-              <p className="text-sm font-medium text-[#6e7f72]">
-                Total streak
-              </p>
-              <p className="mt-2 text-4xl font-bold">{profile.totalStreak}</p>
-            </div>
+          <div className="space-y-3">
+            <DashboardStats
+              stats={[
+                { label: "Habits", value: String(profile.habits.length) },
+                {
+                  label: "Completed today",
+                  value: String(profile.completedToday),
+                },
+                { label: "Total streak", value: String(profile.totalStreak) },
+              ]}
+            />
             <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm sm:col-span-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-semibold text-[#3c493f]">
