@@ -12,18 +12,10 @@ export async function loginUser(email: string, password: string) {
 
   const bcryptStart = Date.now();
   const isValid = await bcrypt.compare(password, user.password);
-  const bcryptDuration = Date.now() - bcryptStart;
 
   if (!isValid) throw new Error("INVALID_CREDENTIALS");
 
-  const tokenStart = Date.now();
   const { accessToken, refreshToken } = generateTokens(user.id);
-  const tokenDuration = Date.now() - tokenStart;
-
-  console.debug("loginUser timing", {
-    bcryptDurationMs: bcryptDuration,
-    tokenDurationMs: tokenDuration,
-  });
 
   return {
     user,
