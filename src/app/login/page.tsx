@@ -2,12 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import AuthForm from "@/components/AuthForm/AuthForm";
-import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 export default function LoginPage() {
   const router = useRouter();
-
-  useAuthRedirect();
 
   async function handleLogin(email: string, password: string) {
     const res = await fetch("/api/auth/login", {

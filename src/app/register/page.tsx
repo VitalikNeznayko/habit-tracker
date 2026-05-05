@@ -2,12 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import AuthForm from "@/components/AuthForm/AuthForm";
-import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 export default function RegisterPage() {
   const router = useRouter();
-
-  useAuthRedirect();
 
   async function handleRegister(email: string, password: string) {
     if (!email || !password) {
