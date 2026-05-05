@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function login() {
+    if (loading) return;
+
     setLoading(true);
 
     const res = await fetch("/api/auth/login", {
@@ -29,9 +30,9 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/dashboard");
+    router.replace("/dashboard");
+    router.refresh();
   }
-
   return (
     <main className="grid min-h-screen place-items-center bg-[#f6f7f4] px-5 py-10 text-[#17201b]">
       <div className="w-full max-w-md rounded-lg border border-[#dce3dc] bg-white p-6 shadow-sm">
