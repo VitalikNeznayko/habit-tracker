@@ -14,33 +14,41 @@ export default function LayoutComponent({
 }: {
   children: React.ReactNode;
 }) {
-  useEffect(() => {
-    fetch("/api/auth/refresh", {
-      method: "POST",
-    });
-  }, []); 
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
     let active = true;
 
-    fetch("/api/auth/me").then(async (res) => {
+    async function loadSession() {
+      await fetch("/api/auth/refresh", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const res = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+
       if (!active) return;
 
-      if (!res.ok) {
-        setUser(null);
-      } else {
+      if (res.ok) {
         setUser(await res.json());
+      } else {
+        setUser(null);
       }
 
       setLoaded(true);
-    });
+    }
+
+    loadSession();
 
     return () => {
       active = false;
     };
   }, [pathname]);
+
   return (
     <>
       <Header setUser={setUser} isLoggedIn={!!user} loaded={loaded} />

@@ -23,6 +23,7 @@ export default function RegisterPage() {
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -36,7 +37,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // Cookies are set after registration, so the user can enter the app.
       router.push("/dashboard");
     } catch (e) {
       console.error("REGISTER ERROR:", e);
@@ -52,9 +52,7 @@ export default function RegisterPage() {
         <Link href="/" className="text-sm font-semibold text-[#6e7f72]">
           Habit Tracker
         </Link>
-        <h1 className="mt-5 text-3xl font-bold">
-          Create account
-        </h1>
+        <h1 className="mt-5 text-3xl font-bold">Create account</h1>
         <p className="mt-2 text-sm leading-6 text-[#6e7f72]">
           Start with one habit today. You can add more once your rhythm is set.
         </p>

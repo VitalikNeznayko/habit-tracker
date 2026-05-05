@@ -32,8 +32,8 @@ export default function ProfilePage() {
 
   async function loadProfile() {
     const [userRes, habitsRes] = await Promise.all([
-      fetch("/api/auth/me"),
-      fetch("/api/habits"),
+      fetch("/api/auth/me", { credentials: "include" }),
+      fetch("/api/habits", { credentials: "include" }),
     ]);
 
     if (userRes.status === 401 || habitsRes.status === 401) {
@@ -42,7 +42,9 @@ export default function ProfilePage() {
 
     const user = (await userRes.json()) as UserProfile;
     const habits = (await habitsRes.json()) as Habit[];
-    const completedToday = habits.filter((habit) => habit.todayCompleted).length;
+    const completedToday = habits.filter(
+      (habit) => habit.todayCompleted,
+    ).length;
     const totalStreak = habits.reduce(
       (sum, habit) => sum + Number(habit.currentStreak || 0),
       0,
