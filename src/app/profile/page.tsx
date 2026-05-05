@@ -15,6 +15,8 @@ type Habit = {
   id: string;
   title: string;
   description?: string | null;
+  todayCompleted: boolean;
+  currentStreak: number;
 };
 
 type ProfileData = {
@@ -29,32 +31,23 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
 
   async function loadProfile() {
-    const userRes = await fetch("/api/auth/me");
+    const [userRes, habitsRes] = await Promise.all([
+      fetch("/api/auth/me", { credentials: "include" }),
+      fetch("/api/habits", { credentials: "include" }),
+    ]);
 
-    if (userRes.status === 401) {
+    if (userRes.status === 401 || habitsRes.status === 401) {
       return { unauthorized: true as const };
     }
 
     const user = (await userRes.json()) as UserProfile;
-    const habits = (await fetch("/api/habits").then((r) =>
-      r.json(),
-    )) as Habit[];
-
-    let completedToday = 0;
-    let totalStreak = 0;
-
-    await Promise.all(
-      habits.map(async (habit) => {
-        const today = await fetch(`/api/habits/${habit.id}/today`).then((r) =>
-          r.json(),
-        );
-        const streak = await fetch(`/api/habits/${habit.id}/streak`).then((r) =>
-          r.json(),
-        );
-
-        if (today.completed) completedToday += 1;
-        totalStreak += Number(streak.streak || 0);
-      }),
+    const habits = (await habitsRes.json()) as Habit[];
+    const completedToday = habits.filter(
+      (habit) => habit.todayCompleted,
+    ).length;
+    const totalStreak = habits.reduce(
+      (sum, habit) => sum + Number(habit.currentStreak || 0),
+      0,
     );
 
     return {

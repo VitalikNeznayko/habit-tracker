@@ -36,7 +36,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // Cookies are set after registration, so the user can enter the app.
       router.push("/dashboard");
     } catch (e) {
       console.error("REGISTER ERROR:", e);
