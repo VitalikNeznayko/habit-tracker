@@ -29,7 +29,7 @@ function Header({
       credentials: "include",
     });
     setUser(null);
-    router.replace("/login");
+    window.location.href = "/login";
   }
   return (
     <header className="border-b border-[#dce3dc] bg-[#f6f7f4]/95 px-5 py-4 sm:px-8">
