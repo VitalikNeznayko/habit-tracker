@@ -19,7 +19,9 @@ export default function Dashboard() {
   const [habits, setHabits] = useState<Habit[]>([]);
 
   async function loadData() {
-    const res = await fetch("/api/habits");
+    const res = await fetch("/api/habits", {
+      credentials: "include",
+    });
 
     if (res.status === 401) {
       return { unauthorized: true as const };
@@ -64,18 +66,50 @@ export default function Dashboard() {
   }, [router]);
 
   async function toggle(id: string) {
-    await fetch("/api/checkins", {
-      method: "POST",
-      body: JSON.stringify({ habitId: id }),
-      headers: { "Content-Type": "application/json" },
-    });
+    setHabits((prev) =>
+      prev.map((h) =>
+        h.id === id
+          ? {
+              ...h,
+              todayCompleted: !h.todayCompleted,
+              currentStreak: h.todayCompleted
+                ? Math.max(0, h.currentStreak - 1)
+                : h.currentStreak + 1,
+            }
+          : h,
+      ),
+    );
 
-    refresh();
+    try {
+      const res = await fetch("/api/checkins", {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ habitId: id }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error();
+    } catch {
+      setHabits((prev) =>
+        prev.map((h) =>
+          h.id === id
+            ? {
+                ...h,
+                todayCompleted: !h.todayCompleted,
+                currentStreak: h.todayCompleted
+                  ? h.currentStreak + 1
+                  : Math.max(0, h.currentStreak - 1),
+              }
+            : h,
+        ),
+      );
+    }
   }
 
   async function addHabit(title: string, description: string) {
     await fetch("/api/habits", {
       method: "POST",
+      credentials: "include",
       body: JSON.stringify({ title, description }),
       headers: { "Content-Type": "application/json" },
     });

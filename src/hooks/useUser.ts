@@ -18,7 +18,7 @@ export function useUser() {
 
     async function loadUser() {
       try {
-        let res = await fetch("/api/auth/me", {
+        let res = await fetch("/api/auth/user", {
           credentials: "include",
         });
 
@@ -31,7 +31,7 @@ export function useUser() {
           });
 
           if (refresh.ok) {
-            res = await fetch("/api/auth/me", {
+            res = await fetch("/api/auth/user", {
               credentials: "include",
             });
             user = await res.json();

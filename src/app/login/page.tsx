@@ -17,11 +17,11 @@ export default function LoginPage() {
     });
 
     if (!res.ok) {
-      alert("Invalid credentials");
-      return;
+      const data = await res.json();
+      throw new Error(data.error || "Login failed");
     }
 
-    router.replace("/dashboard");
+    window.location.href = "/dashboard";
   }
 
   return (

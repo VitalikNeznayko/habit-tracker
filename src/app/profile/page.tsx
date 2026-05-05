@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
   async function loadProfile() {
     const [userRes, habitsRes] = await Promise.all([
-      fetch("/api/auth/me", { credentials: "include" }),
+      fetch("/api/auth/user", { credentials: "include" }),
       fetch("/api/habits", { credentials: "include" }),
     ]);
 

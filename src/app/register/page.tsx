@@ -8,12 +8,12 @@ export default function RegisterPage() {
 
   async function handleRegister(email: string, password: string) {
     if (!email || !password) {
-      alert("Fill all fields");
-      return;
+      throw new Error("Fill all fields");
     }
 
     const res = await fetch("/api/auth/register", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -23,11 +23,10 @@ export default function RegisterPage() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error || "Register failed");
-      return;
+      throw new Error(data.error || "Register failed");
     }
 
-    router.push("/dashboard");
+    window.location.href = "/dashboard";
   }
 
   return (

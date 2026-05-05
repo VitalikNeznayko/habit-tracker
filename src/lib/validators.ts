@@ -25,7 +25,6 @@ const descriptionSchema = z
   .optional()
   .or(z.literal(""));
 
-const uuidSchema = z.string().uuid("Invalid UUID");
 
 export const registerSchema = z.object({
   email: emailSchema,
@@ -45,16 +44,4 @@ export const createHabitSchema = z.object({
 export const updateHabitSchema = z.object({
   title: titleSchema,
   description: descriptionSchema,
-});
-
-export const idParamSchema = z.object({
-  id: z.string().uuid("Invalid id"),
-});
-
-export const checkInSchema = z.object({
-  habitId: uuidSchema,
-});
-
-export const refreshPayloadSchema = z.object({
-  userId: uuidSchema,
 });

@@ -23,13 +23,17 @@ export default function AuthForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSubmit() {
     if (loading) return;
     setLoading(true);
+    setError("");
 
     try {
       await onSubmit(email, password);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -58,6 +62,8 @@ export default function AuthForm({
           onChange={(e) => setPassword(e.target.value)}
           className="mt-3 w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
         />
+
+        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
         <button
           onClick={handleSubmit}
