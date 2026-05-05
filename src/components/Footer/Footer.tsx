@@ -16,9 +16,14 @@ export default function Footer({ user }: { user: User | null }) {
         <p className="font-semibold text-[#17201b]">Habit Tracker</p>
         <div className="flex flex-wrap gap-4">
           {isLoggedIn ? (
-            <Link href="/profile" className="hover:text-[#17201b]">
-              Profile
-            </Link>
+            <>
+              <Link href="/dashboard" className="hover:text-[#17201b]">
+                Dashboard
+              </Link>
+              <Link href="/profile" className="hover:text-[#17201b]">
+                Profile
+              </Link>
+            </>
           ) : (
             <>
               <Link href="/login" className="hover:text-[#17201b]">
@@ -29,9 +34,6 @@ export default function Footer({ user }: { user: User | null }) {
               </Link>
             </>
           )}
-          <Link href="/dashboard" className="hover:text-[#17201b]">
-            Dashboard
-          </Link>
         </div>
       </div>
     </footer>

@@ -42,6 +42,12 @@ function Header({
           {isLoggedIn ? (
             <>
               <Link
+                href="/dashboard"
+                className={navClass(pathname === "/dashboard")}
+              >
+                Dashboard
+              </Link>
+              <Link
                 href="/profile"
                 className={navClass(pathname === "/profile")}
               >
@@ -56,12 +62,6 @@ function Header({
             </>
           ) : loaded ? (
             <>
-              <Link
-                href="/dashboard"
-                className={navClass(pathname === "/dashboard")}
-              >
-                Dashboard
-              </Link>
               <Link
                 href="/login"
                 className="rounded-md px-4 py-2 text-sm font-semibold text-[#435248] transition hover:bg-white hover:text-[#17201b]"
