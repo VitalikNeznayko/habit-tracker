@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 type User = {
   id: string;
   email: string;
@@ -21,8 +21,6 @@ function Header({
   loaded: boolean;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
-
   async function logout() {
     await fetch("/api/auth/logout", {
       method: "POST",

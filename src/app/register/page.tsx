@@ -1,15 +1,9 @@
 "use client";
-
-import { useRouter } from "next/navigation";
 import AuthForm from "@/components/AuthForm/AuthForm";
 
 export default function RegisterPage() {
-  const router = useRouter();
 
   async function handleRegister(email: string, password: string) {
-    if (!email || !password) {
-      throw new Error("Fill all fields");
-    }
 
     const res = await fetch("/api/auth/register", {
       method: "POST",

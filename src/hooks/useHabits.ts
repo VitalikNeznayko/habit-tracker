@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-type Habit = {
-  id: string;
-  title: string;
-  description?: string | null;
-  todayCompleted: boolean;
-  currentStreak: number;
-};
+import { Habits } from "@/types/types";
+
 export function useHabits() {
   const router = useRouter();
-  const [habits, setHabits] = useState<Habit[]>([]);
+  const [habits, setHabits] = useState<Habits[]>([]);
 
   async function load() {
     const res = await fetch("/api/habits", {

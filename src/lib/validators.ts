@@ -8,7 +8,7 @@ const emailSchema = z
 
 const passwordSchema = z
   .string()
-  .min(6, "Min 6 chars")
+  .min(6, "Password must be at least 6 characters")
   .regex(/[A-Z]/, "Must include uppercase letter")
   .regex(/[0-9]/, "Must include number");
 
