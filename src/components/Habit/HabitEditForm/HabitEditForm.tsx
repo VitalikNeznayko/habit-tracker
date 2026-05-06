@@ -1,7 +1,5 @@
 "use client";
-
 import { useState } from "react";
-import { Habit } from "@/types/types";
 import { updateHabitSchema } from "@/lib/validators";
 
 type Props = {
