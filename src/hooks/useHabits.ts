@@ -18,8 +18,9 @@ export function useHabits() {
 
     const data = await res.json();
     setHabits(data);
-  }, []);
-  
+  }, [router]);
+
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     void load();
   }, []);
