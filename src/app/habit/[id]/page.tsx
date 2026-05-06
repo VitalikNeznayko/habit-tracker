@@ -10,6 +10,7 @@ import ProgressBar from "@/components/Habit/ProgressBar/ProgressBar";
 import HabitEditForm from "@/components/Habit/HabitEditForm/HabitEditForm";
 import HabitDangerZone from "@/components/Habit/HabitDangerZone/HabitDangerZone";
 import DashboardStats from "@/components/DashboardStats/DashboardStats";
+import DeleteHabitModal from "@/components/Habit/DeleteHabitModal/DeleteHabitModal";
 
 export default function HabitPage() {
   const params = useParams();
@@ -17,6 +18,7 @@ export default function HabitPage() {
 
   const { habit, loading, toggle, save, remove, stats } = useHabit(id);
 
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
@@ -54,16 +56,15 @@ export default function HabitPage() {
   }
 
   async function handleDelete() {
-    const confirmed = window.confirm("Delete this habit and all check-ins?");
-    if (!confirmed) return;
-
     setDeleting(true);
+
     try {
       await remove();
     } catch {
       alert("Could not delete habit");
     } finally {
       setDeleting(false);
+      setDeleteModalOpen(false);
     }
   }
 
@@ -116,7 +117,18 @@ export default function HabitPage() {
           <ProgressBar habit={habit} />
         </section>
 
-        <HabitDangerZone onDelete={handleDelete} deleting={deleting} />
+        <HabitDangerZone
+          onDelete={() => setDeleteModalOpen(true)}
+          deleting={deleting}
+        />
+
+        <DeleteHabitModal
+          open={deleteModalOpen}
+          title={habit.title}
+          loading={deleting}
+          onCancel={() => setDeleteModalOpen(false)}
+          onConfirm={handleDelete}
+        />
       </div>
     </main>
   );
