@@ -1,9 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import DashboardStats from "@/components/DashboardStats/DashboardStats";
+
+import ProfileCard from "@/components/Profile/ProfileCard/ProfileCard";
+import ProfileOverview from "@/components/Profile/ProfileOverview/ProfileOverview";
+import ChangePasswordForm from "@/components/Profile/ChangePasswordForm/ChangePasswordForm";
+import ActiveHabits from "@/components/Profile/ActiveHabits/ActiveHabits";
 
 type UserProfile = {
   id: string;
@@ -182,165 +185,39 @@ export default function ProfilePage() {
         </header>
 
         <section className="mt-8 grid gap-4 lg:grid-cols-[360px_1fr]">
-          <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
-            <div className="grid h-16 w-16 place-items-center rounded-lg bg-[#17201b] text-2xl font-bold text-white">
-              {profile.user.email.slice(0, 1).toUpperCase()}
-            </div>
-
-            <h2 className="mt-5 break-words text-2xl font-bold">
-              {profile.user.email}
-            </h2>
-
-            <p className="mt-2 text-sm text-[#6e7f72]">Joined {joinedAt}</p>
-
-            <button
-              onClick={() => setMode("password")}
-              className="mt-5 rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold transition hover:border-[#9fab9f]"
-            >
-              Change password
-            </button>
-          </div>
+          <ProfileCard
+            email={profile.user.email}
+            joinedAt={joinedAt}
+            onChangePassword={() => setMode("password")}
+            mode={mode}
+          />
 
           <div className="space-y-3">
             {mode === "overview" ? (
-              <>
-                <DashboardStats
-                  stats={[
-                    {
-                      label: "Habits",
-                      value: String(profile.habits.length),
-                    },
-                    {
-                      label: "Completed today",
-                      value: String(profile.completedToday),
-                    },
-                    {
-                      label: "Longest streak",
-                      value: String(longestStreak),
-                    },
-                  ]}
-                />
-
-                <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm sm:col-span-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-semibold text-[#3c493f]">
-                      Daily completion
-                    </span>
-
-                    <span className="text-[#6e7f72]">{completionPercent}%</span>
-                  </div>
-
-                  <div className="mt-3 h-3 overflow-hidden rounded-full bg-[#edf0ed]">
-                    <div
-                      className="h-full rounded-full bg-[#3b8f55]"
-                      style={{
-                        width: `${completionPercent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              </>
+              <ProfileOverview
+                habitsCount={profile.habits.length}
+                completedToday={profile.completedToday}
+                longestStreak={longestStreak}
+                completionPercent={completionPercent}
+              />
             ) : (
-              <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h2 className="text-xl font-bold">Change password</h2>
-
-                    <p className="mt-1 text-sm text-[#6e7f72]">
-                      Update your account password.
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => setMode("overview")}
-                    className="rounded-md border border-[#cbd4cc] bg-white px-3 py-2 text-sm font-semibold transition hover:border-[#9fab9f]"
-                  >
-                    Back
-                  </button>
-                </div>
-
-                <div className="mt-5 space-y-3">
-                  <input
-                    type="password"
-                    placeholder="Current password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
-                  />
-
-                  <input
-                    type="password"
-                    placeholder="New password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
-                  />
-
-                  <input
-                    type="password"
-                    placeholder="Confirm new password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
-                  />
-
-                  {passwordError && (
-                    <p className="text-sm text-red-600">{passwordError}</p>
-                  )}
-
-                  <button
-                    onClick={handlePasswordChange}
-                    disabled={passwordLoading}
-                    className="w-full rounded-md bg-[#17201b] py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {passwordLoading ? "Updating..." : "Update password"}
-                  </button>
-                </div>
-              </div>
+              <ChangePasswordForm
+                currentPassword={currentPassword}
+                newPassword={newPassword}
+                confirmPassword={confirmPassword}
+                passwordError={passwordError}
+                passwordLoading={passwordLoading}
+                setCurrentPassword={setCurrentPassword}
+                setNewPassword={setNewPassword}
+                setConfirmPassword={setConfirmPassword}
+                onSubmit={handlePasswordChange}
+                onBack={() => setMode("overview")}
+              />
             )}
           </div>
         </section>
 
-        <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-bold">Active habits</h2>
-
-              <p className="mt-1 text-sm text-[#6e7f72]">
-                A quick list of what currently shapes your routine.
-              </p>
-            </div>
-
-            <Link
-              href="/dashboard"
-              className="rounded-md bg-[#17201b] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#28352d]"
-            >
-              Manage
-            </Link>
-          </div>
-
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
-            {profile.habits.length === 0 ? (
-              <p className="rounded-md border border-dashed border-[#cbd4cc] p-4 text-sm text-[#6e7f72] md:col-span-2">
-                No habits yet. Create one from the dashboard.
-              </p>
-            ) : (
-              profile.habits.map((habit) => (
-                <Link
-                  key={habit.id}
-                  href={`/habit/${habit.id}`}
-                  className="rounded-md border border-[#eef1ee] bg-[#fbfcfa] p-4 transition hover:border-[#cbd4cc] hover:bg-white"
-                >
-                  <h3 className="font-semibold">{habit.title}</h3>
-
-                  <p className="mt-1 text-sm text-[#6e7f72]">
-                    {habit.description || "No description yet."}
-                  </p>
-                </Link>
-              ))
-            )}
-          </div>
-        </section>
+        <ActiveHabits habits={profile.habits} />
       </div>
     </main>
   );
