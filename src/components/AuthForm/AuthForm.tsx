@@ -102,6 +102,12 @@ export default function AuthForm({
             {altLinkLabel}
           </Link>
         </p>
+        <a
+          href="/api/auth/google"
+          className="mt-3 flex w-full items-center justify-center rounded-md border border-[#cbd4cc] bg-white py-3 text-sm font-semibold transition hover:border-[#9fab9f]"
+        >
+          Continue with Google
+        </a>
       </div>
     </main>
   );
