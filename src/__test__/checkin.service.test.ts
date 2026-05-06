@@ -1,28 +1,30 @@
+import { describe, expect, it, vi } from "vitest";
+
 import { toggleCheckIn } from "@/services/checkin.service";
 
 import { prisma } from "@/lib/prisma";
 
-jest.mock("@/lib/prisma", () => ({
+vi.mock("@/lib/prisma", () => ({
   prisma: {
     habit: {
-      findFirst: jest.fn(),
+      findFirst: vi.fn(),
     },
 
     checkIn: {
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      delete: jest.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      delete: vi.fn(),
     },
   },
 }));
 
 describe("toggleCheckIn", () => {
   it("creates check-in", async () => {
-    (prisma.habit.findFirst as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.habit.findFirst).mockResolvedValue({
       id: "1",
-    });
+    } as never);
 
-    (prisma.checkIn.findUnique as jest.Mock).mockResolvedValue(null);
+    vi.mocked(prisma.checkIn.findUnique).mockResolvedValue(null as never);
 
     const result = await toggleCheckIn("user-id", "habit-id");
 
@@ -30,13 +32,13 @@ describe("toggleCheckIn", () => {
   });
 
   it("removes existing check-in", async () => {
-    (prisma.habit.findFirst as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.habit.findFirst).mockResolvedValue({
       id: "1",
-    });
+    } as never);
 
-    (prisma.checkIn.findUnique as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.checkIn.findUnique).mockResolvedValue({
       id: "checkin-id",
-    });
+    } as never);
 
     const result = await toggleCheckIn("user-id", "habit-id");
 
@@ -44,7 +46,7 @@ describe("toggleCheckIn", () => {
   });
 
   it("throws if habit missing", async () => {
-    (prisma.habit.findFirst as jest.Mock).mockResolvedValue(null);
+    vi.mocked(prisma.habit.findFirst).mockResolvedValue(null as never);
 
     await expect(toggleCheckIn("user-id", "habit-id")).rejects.toThrow(
       "NOT_FOUND",

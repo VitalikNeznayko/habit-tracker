@@ -1,3 +1,5 @@
+import { describe, expect, it, vi } from "vitest";
+
 import {
   createHabit,
   deleteHabit,
@@ -7,23 +9,23 @@ import {
 
 import { prisma } from "@/lib/prisma";
 
-jest.mock("@/lib/prisma", () => ({
+vi.mock("@/lib/prisma", () => ({
   prisma: {
     habit: {
-      create: jest.fn(),
-      findFirst: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      create: vi.fn(),
+      findFirst: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     },
   },
 }));
 
 describe("createHabit", () => {
   it("creates habit", async () => {
-    (prisma.habit.create as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.habit.create).mockResolvedValue({
       id: "1",
       title: "Workout",
-    });
+    } as never);
 
     const result = await createHabit("user-id", "Workout", "Push ups");
 
@@ -33,14 +35,14 @@ describe("createHabit", () => {
 
 describe("updateHabit", () => {
   it("updates habit", async () => {
-    (prisma.habit.findFirst as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.habit.findFirst).mockResolvedValue({
       id: "1",
-    });
+    } as never);
 
-    (prisma.habit.update as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.habit.update).mockResolvedValue({
       id: "1",
       title: "Updated",
-    });
+    } as never);
 
     const result = await updateHabit("user-id", "1", "Updated", "Desc");
 
@@ -48,7 +50,7 @@ describe("updateHabit", () => {
   });
 
   it("throws when habit missing", async () => {
-    (prisma.habit.findFirst as jest.Mock).mockResolvedValue(null);
+    vi.mocked(prisma.habit.findFirst).mockResolvedValue(null as never);
 
     await expect(updateHabit("user-id", "1", "Updated")).rejects.toThrow(
       "NOT_FOUND",
@@ -58,13 +60,13 @@ describe("updateHabit", () => {
 
 describe("deleteHabit", () => {
   it("deletes habit", async () => {
-    (prisma.habit.findFirst as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.habit.findFirst).mockResolvedValue({
       id: "1",
-    });
+    } as never);
 
-    (prisma.habit.delete as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.habit.delete).mockResolvedValue({
       id: "1",
-    });
+    } as never);
 
     const result = await deleteHabit("user-id", "1");
 
@@ -74,10 +76,10 @@ describe("deleteHabit", () => {
 
 describe("getHabitById", () => {
   it("returns habit", async () => {
-    (prisma.habit.findFirst as jest.Mock).mockResolvedValue({
+    vi.mocked(prisma.habit.findFirst).mockResolvedValue({
       id: "1",
       title: "Workout",
-    });
+    } as never);
 
     const result = await getHabitById("user-id", "1");
 
@@ -85,7 +87,7 @@ describe("getHabitById", () => {
   });
 
   it("throws if habit missing", async () => {
-    (prisma.habit.findFirst as jest.Mock).mockResolvedValue(null);
+    vi.mocked(prisma.habit.findFirst).mockResolvedValue(null as never);
 
     await expect(getHabitById("user-id", "1")).rejects.toThrow("NOT_FOUND");
   });

@@ -4,6 +4,7 @@ import {
   registerSchema,
 } from "@/lib/validators";
 
+import { describe, expect, it} from "vitest";
 describe("registerSchema", () => {
   it("accepts valid credentials", () => {
     const result = registerSchema.safeParse({

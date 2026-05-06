@@ -1,3 +1,5 @@
+import { describe, expect, it, beforeAll } from "vitest";
+
 import jwt from "jsonwebtoken";
 
 import { getUserIdFromToken } from "@/lib/auth";
