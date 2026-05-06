@@ -1,11 +1,8 @@
 "use client";
-
 import { useState } from "react";
-import { Habit } from "@/types/types";
 import { updateHabitSchema } from "@/lib/validators";
 
 type Props = {
-  habit: Habit;
   editTitle: string;
   editDescription: string;
   setEditTitle: (v: string) => void;
@@ -16,7 +13,6 @@ type Props = {
 };
 
 export default function HabitEditForm({
-  habit,
   editTitle,
   editDescription,
   setEditTitle,

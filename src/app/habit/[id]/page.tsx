@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useHabit } from "@/hooks/useHabit";
 
@@ -19,25 +19,27 @@ export default function HabitPage() {
   const { habit, loading, toggle, save, remove, stats } = useHabit(id);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDescription, setEditDescription] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [toggling, setToggling] = useState(false);
 
-  useEffect(() => {
-    if (!habit) return;
-    setEditTitle(habit.title);
-    setEditDescription(habit.description || "");
-  }, [habit]);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [editTitle, setEditTitle] = useState("");
+
+  const [editDescription, setEditDescription] = useState("");
+
+  const [saving, setSaving] = useState(false);
+
+  const [deleting, setDeleting] = useState(false);
+
+  const [toggling, setToggling] = useState(false);
 
   async function handleSave() {
     if (!editTitle.trim()) return;
 
     setSaving(true);
+
     try {
       await save(editTitle, editDescription);
+
       setIsEditing(false);
     } catch {
       alert("Could not save habit");
@@ -48,6 +50,7 @@ export default function HabitPage() {
 
   async function handleToggle() {
     setToggling(true);
+
     try {
       await Promise.resolve(toggle());
     } finally {
@@ -91,7 +94,6 @@ export default function HabitPage() {
         <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm sm:p-7">
           {isEditing ? (
             <HabitEditForm
-              habit={habit}
               editTitle={editTitle}
               editDescription={editDescription}
               setEditTitle={setEditTitle}
@@ -99,7 +101,9 @@ export default function HabitPage() {
               onSave={handleSave}
               onCancel={() => {
                 setIsEditing(false);
+
                 setEditTitle(habit.title);
+
                 setEditDescription(habit.description || "");
               }}
               saving={saving}
@@ -107,13 +111,20 @@ export default function HabitPage() {
           ) : (
             <HabitHeader
               habit={habit}
-              setIsEditing={setIsEditing}
+              setIsEditing={() => {
+                setEditTitle(habit.title);
+
+                setEditDescription(habit.description || "");
+
+                setIsEditing(true);
+              }}
               toggle={handleToggle}
               toggling={toggling}
             />
           )}
 
           <DashboardStats stats={stats} />
+
           <ProgressBar habit={habit} />
         </section>
 

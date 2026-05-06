@@ -23,7 +23,12 @@ export function useHabit(id: string) {
 
   useEffect(() => {
     if (!id) return;
-    load();
+
+    async function init() {
+      await load();
+    }
+
+    void init();
   }, [id, load]);
 
   async function toggle() {
