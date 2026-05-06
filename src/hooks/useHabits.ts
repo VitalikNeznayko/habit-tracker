@@ -23,7 +23,7 @@ export function useHabits() {
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
 
   async function toggle(id: string) {
     setHabits((prev) =>
