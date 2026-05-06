@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Habits } from "@/types/types";
 
@@ -6,7 +6,7 @@ export function useHabits() {
   const router = useRouter();
   const [habits, setHabits] = useState<Habits[]>([]);
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch("/api/habits", {
       credentials: "include",
     });
@@ -18,8 +18,8 @@ export function useHabits() {
 
     const data = await res.json();
     setHabits(data);
-  }
-
+  }, []);
+  
   useEffect(() => {
     void load();
   }, []);
