@@ -1,98 +1,19 @@
 "use client";
-
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import DashboardStats from "@/components/DashboardStats/DashboardStats";
-
-type Habit = {
-  id: string;
-  title: string;
-  description?: string | null;
-  todayCompleted: boolean;
-  currentStreak: number;
-};
+import HabitCard from "@/components/Dashboard/HabitCard/HabitCard";
+import HabitForm from "@/components/Dashboard/HabitForm/HabitForm";
+import { useHabits } from "@/hooks/useHabits";
 
 export default function Dashboard() {
-  const router = useRouter();
-  const [habits, setHabits] = useState<Habit[]>([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const { habits, toggle, addHabit } = useHabits();
 
-  async function loadData() {
-    const res = await fetch("/api/habits");
+  const completedToday = habits.filter((h) => h.todayCompleted).length;
 
-    if (res.status === 401) {
-      return { unauthorized: true as const };
-    }
-
-    const data = (await res.json()) as Habit[];
-
-    return {
-      unauthorized: false as const,
-      habits: data,
-    };
-  }
-
-  async function refresh() {
-    const data = await loadData();
-
-    if (data.unauthorized) {
-      router.replace("/login");
-      return;
-    }
-
-    setHabits(data.habits);
-  }
-
-  useEffect(() => {
-    let active = true;
-
-    loadData().then((data) => {
-      if (!active) return;
-
-      if (data.unauthorized) {
-        router.replace("/login");
-        return;
-      }
-
-      setHabits(data.habits);
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [router]);
-
-  async function toggle(id: string) {
-    await fetch("/api/checkins", {
-      method: "POST",
-      body: JSON.stringify({ habitId: id }),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    refresh();
-  }
-
-  async function addHabit() {
-    if (!title.trim()) return;
-
-    await fetch("/api/habits", {
-      method: "POST",
-      body: JSON.stringify({ title, description }),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    setTitle("");
-    setDescription("");
-    refresh();
-  }
-
-  const completedToday = habits.filter((habit) => habit.todayCompleted).length;
   const longestStreak = habits.reduce(
-    (max, habit) => Math.max(max, habit.currentStreak || 0),
+    (max, h) => Math.max(max, h.currentStreak || 0),
     0,
   );
+
   const completionPercent = habits.length
     ? Math.round((completedToday / habits.length) * 100)
     : 0;
@@ -105,7 +26,7 @@ export default function Dashboard() {
             Dashboard
           </p>
           <h1 className="mt-2 text-4xl font-bold">Today habits</h1>
-        </div>  
+        </div>
 
         <div className="mt-8">
           <DashboardStats
@@ -120,34 +41,7 @@ export default function Dashboard() {
           />
         </div>
 
-        <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm">
-          <div className="grid gap-3 lg:grid-cols-[1fr_1.3fr_auto]">
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") addHabit();
-              }}
-              placeholder="New habit..."
-              className="min-h-11 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
-            />
-            <input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") addHabit();
-              }}
-              placeholder="Description or trigger..."
-              className="min-h-11 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
-            />
-            <button
-              onClick={addHabit}
-              className="min-h-11 rounded-md bg-[#17201b] px-5 text-sm font-semibold text-white transition hover:bg-[#28352d]"
-            >
-              Add habit
-            </button>
-          </div>
-        </section>
+        <HabitForm onSubmit={addHabit} />
 
         <section className="mt-6 space-y-3">
           {habits.length === 0 ? (
@@ -158,59 +52,17 @@ export default function Dashboard() {
               </p>
             </div>
           ) : (
-            habits.map((habit) => {
-              const done = habit.todayCompleted;
-
-              return (
-                <article
-                  key={habit.id}
-                  className={`flex flex-col gap-4 rounded-lg border p-4 shadow-sm transition sm:flex-row sm:items-center sm:justify-between ${
-                    done
-                      ? "border-[#cde8d3] bg-[#f1fbf3]"
-                      : "border-[#dce3dc] bg-white"
-                  }`}
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <button
-                      onClick={() => toggle(habit.id)}
-                      aria-label={`Toggle ${habit.title}`}
-                      className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border text-xs font-bold transition ${
-                        done
-                          ? "border-[#3b8f55] bg-[#3b8f55] text-white"
-                          : "border-[#cbd4cc] bg-white text-transparent hover:border-[#3b8f55]"
-                      }`}
-                    >
-                      ✓
-                    </button>
-                    <div className="min-w-0">
-                      <h2
-                        className={`truncate text-base font-semibold ${
-                          done ? "text-[#6e7f72] line-through" : ""
-                        }`}
-                      >
-                        {habit.title}
-                      </h2>
-                      <p className="text-sm text-[#6e7f72]">
-                        {habit.description ||
-                          (done ? "Completed today" : "Waiting for today")}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-3 sm:justify-end">
-                    <span className="rounded-md bg-[#eef3ef] px-3 py-2 text-sm font-semibold text-[#3c493f]">
-                      {habit.currentStreak || 0} day streak
-                    </span>
-                    <Link
-                      href={`/habit/${habit.id}`}
-                      className="rounded-md border border-[#cbd4cc] bg-white px-3 py-2 text-sm font-semibold transition hover:border-[#9fab9f]"
-                    >
-                      Details
-                    </Link>
-                  </div>
-                </article>
-              );
-            })
+            habits.map((habit) => (
+              <HabitCard
+                key={habit.id}
+                id={habit.id}
+                title={habit.title}
+                description={habit.description}
+                todayCompleted={habit.todayCompleted}
+                currentStreak={habit.currentStreak}
+                onToggle={toggle}
+              />
+            ))
           )}
         </section>
       </div>

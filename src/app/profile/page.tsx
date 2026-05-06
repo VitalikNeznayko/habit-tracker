@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
   async function loadProfile() {
     const [userRes, habitsRes] = await Promise.all([
-      fetch("/api/auth/me", { credentials: "include" }),
+      fetch("/api/auth/user", { credentials: "include" }),
       fetch("/api/habits", { credentials: "include" }),
     ]);
 
@@ -102,6 +102,10 @@ export default function ProfilePage() {
     ? Math.round((profile.completedToday / profile.habits.length) * 100)
     : 0;
 
+  const longestStreak = profile.habits.reduce(
+    (max, h) => Math.max(max, h.currentStreak || 0),
+    0,
+  );
   return (
     <main className="bg-[#f6f7f4] text-[#17201b]">
       <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8">
@@ -133,7 +137,10 @@ export default function ProfilePage() {
                   label: "Completed today",
                   value: String(profile.completedToday),
                 },
-                { label: "Total streak", value: String(profile.totalStreak) },
+                {
+                  label: "Longest streak",
+                  value: String(longestStreak),
+                },
               ]}
             />
             <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm sm:col-span-3">

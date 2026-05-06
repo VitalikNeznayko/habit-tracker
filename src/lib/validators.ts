@@ -8,7 +8,7 @@ const emailSchema = z
 
 const passwordSchema = z
   .string()
-  .min(6, "Min 6 chars")
+  .min(6, "Password must be at least 6 characters")
   .regex(/[A-Z]/, "Must include uppercase letter")
   .regex(/[0-9]/, "Must include number");
 
@@ -25,7 +25,6 @@ const descriptionSchema = z
   .optional()
   .or(z.literal(""));
 
-const uuidSchema = z.string().uuid("Invalid UUID");
 
 export const registerSchema = z.object({
   email: emailSchema,
@@ -45,16 +44,4 @@ export const createHabitSchema = z.object({
 export const updateHabitSchema = z.object({
   title: titleSchema,
   description: descriptionSchema,
-});
-
-export const idParamSchema = z.object({
-  id: z.string().uuid("Invalid id"),
-});
-
-export const checkInSchema = z.object({
-  habitId: uuidSchema,
-});
-
-export const refreshPayloadSchema = z.object({
-  userId: uuidSchema,
 });

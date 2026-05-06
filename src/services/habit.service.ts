@@ -1,3 +1,4 @@
+
 import { prisma } from "@/lib/prisma";
 import { getToday } from "@/lib/date";
 
@@ -12,13 +13,35 @@ function normalize(date: Date) {
 }
 
 function getCurrentStreakFromCheckIns(checkins: CheckInDate[]) {
+  if (!checkins.length) return 0;
+
+  const normalizeDate = (d: Date) => normalize(d).getTime();
+
+  const datesSet = new Set(checkins.map((c) => normalizeDate(c.date)));
+
+  const today = getToday();
+  const todayTime = today.getTime();
+
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const yesterdayTime = yesterday.getTime();
+
+  let currentDate: Date;
+
+  if (datesSet.has(todayTime)) {
+    currentDate = new Date(today);
+  } else if (datesSet.has(yesterdayTime)) {
+    currentDate = new Date(yesterday);
+  } else {
+    return 0;
+  }
+
   let streak = 0;
-  const currentDate = getToday();
 
-  for (const check of checkins) {
-    const d = normalize(check.date);
+  while (true) {
+    const time = normalize(currentDate).getTime();
 
-    if (d.getTime() === currentDate.getTime()) {
+    if (datesSet.has(time)) {
       streak++;
       currentDate.setDate(currentDate.getDate() - 1);
     } else {

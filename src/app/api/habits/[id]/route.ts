@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { getUserIdFromToken } from "@/lib/auth";
 import { ok, error } from "@/lib/api";
 import { updateHabit, deleteHabit } from "@/services/habit.service";
-import { idParamSchema, updateHabitSchema } from "@/lib/validators";
+import { updateHabitSchema } from "@/lib/validators";
 import { getHabitByIdWithStats } from "@/services/habit.service";
 
 export async function PUT(
@@ -15,11 +15,6 @@ export async function PUT(
   if (!userId) return error("Unauthorized", 401);
 
   const params = await context.params;
-  const parsedParams = idParamSchema.safeParse(params);
-
-  if (!parsedParams.success) {
-    return error(parsedParams.error.issues[0].message, 400);
-  }
 
   const body = await req.json();
   const parsed = updateHabitSchema.safeParse(body);
@@ -31,7 +26,7 @@ export async function PUT(
   try {
     const habit = await updateHabit(
       userId,
-      parsedParams.data.id,
+      params.id,
       parsed.data.title,
       parsed.data.description,
     );
@@ -58,14 +53,10 @@ export async function DELETE(
   if (!userId) return error("Unauthorized", 401);
 
   const params = await context.params;
-  const parsedParams = idParamSchema.safeParse(params);
 
-  if (!parsedParams.success) {
-    return error(parsedParams.error.issues[0].message, 400);
-  }
 
   try {
-    const result = await deleteHabit(userId, parsedParams.data.id);
+    const result = await deleteHabit(userId, params.id);
     return ok(result);
   } catch (e: unknown) {
     if (e instanceof Error && e.message === "NOT_FOUND") {
@@ -86,14 +77,9 @@ export async function GET(
   if (!userId) return error("Unauthorized", 401);
 
   const params = await context.params;
-  const parsedParams = idParamSchema.safeParse(params);
-
-  if (!parsedParams.success) {
-    return error(parsedParams.error.issues[0].message, 400);
-  }
 
   try {
-    const habit = await getHabitByIdWithStats(userId, parsedParams.data.id);
+    const habit = await getHabitByIdWithStats(userId, params.id);
     return ok(habit);
   } catch (e: unknown) {
     if (e instanceof Error && e.message === "NOT_FOUND") {

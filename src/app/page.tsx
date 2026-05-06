@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { getUserIdFromToken } from "@/lib/auth";
-import HabitPreviewCard from "@/components/HabitPreviewCard/HabitPreviewCard";
+import HabitPreviewCard from "@/components/Dashboard/HabitPreviewCard/HabitPreviewCard";
 
 const previewHabits = [
   { title: "Morning walk", status: "Done", streak: "12 days" },
@@ -71,9 +71,7 @@ async function Home() {
         <HabitPreviewCard habits={previewHabits} />
       </section>
 
-      <section
-        className="border-y border-[#dce3dc] bg-white px-5 py-14 sm:px-8"
-      >
+      <section className="border-y border-[#dce3dc] bg-white px-5 py-14 sm:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase text-[#6e7f72]">
@@ -159,7 +157,6 @@ async function Home() {
           </Link>
         </div>
       </section>
-
     </main>
   );
 }
