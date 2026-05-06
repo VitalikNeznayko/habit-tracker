@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { getUserIdFromToken } from "@/lib/auth";
-import HabitPreviewCard from "@/components/dashboard/HabitPreviewCard/HabitPreviewCard";
+import HabitPreviewCard from "@/components/Dashboard/HabitPreviewCard/HabitPreviewCard";
 
 const previewHabits = [
   { title: "Morning walk", status: "Done", streak: "12 days" },

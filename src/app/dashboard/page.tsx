@@ -1,25 +1,23 @@
 "use client";
 import DashboardStats from "@/components/DashboardStats/DashboardStats";
-import HabitCard from "@/components/dashboard/HabitCard/HabitCard";
-import HabitForm from "@/components/dashboard/HabitForm/HabitForm";
+import HabitCard from "@/components/Dashboard/HabitCard/HabitCard";
+import HabitForm from "@/components/Dashboard/HabitForm/HabitForm";
 import { useHabits } from "@/hooks/useHabits";
 
-
 export default function Dashboard() {
+  const { habits, toggle, addHabit } = useHabits();
 
- const { habits, toggle, addHabit } = useHabits();
+  const completedToday = habits.filter((h) => h.todayCompleted).length;
 
- const completedToday = habits.filter((h) => h.todayCompleted).length;
+  const longestStreak = habits.reduce(
+    (max, h) => Math.max(max, h.currentStreak || 0),
+    0,
+  );
 
- const longestStreak = habits.reduce(
-   (max, h) => Math.max(max, h.currentStreak || 0),
-   0,
- );
+  const completionPercent = habits.length
+    ? Math.round((completedToday / habits.length) * 100)
+    : 0;
 
- const completionPercent = habits.length
-   ? Math.round((completedToday / habits.length) * 100)
-   : 0;
-   
   return (
     <main className="bg-[#f6f7f4] text-[#17201b]">
       <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8">

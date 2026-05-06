@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 
 type HabitCardProps = {
   id: string;
@@ -19,11 +20,19 @@ export default function HabitCard({
   currentStreak,
   onToggle,
 }: HabitCardProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const done = todayCompleted;
   const streak = currentStreak;
 
-  function handleToggle() {
-    onToggle(id);
+  async function handleToggle() {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      await Promise.resolve(onToggle(id));
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -35,14 +44,17 @@ export default function HabitCard({
       <div className="flex min-w-0 items-center gap-3">
         <button
           onClick={handleToggle}
+          disabled={isLoading}
           aria-label={`Toggle ${title}`}
           className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border text-xs font-bold transition-all duration-200 ${
+            isLoading ? "opacity-50" : ""
+          } ${
             done
               ? "border-[#3b8f55] bg-[#3b8f55] text-white scale-100"
               : "border-[#cbd4cc] bg-white text-transparent hover:border-[#3b8f55]"
           }`}
         >
-          ✓
+          {isLoading ? "..." : "✓"}
         </button>
 
         <div className="min-w-0">

@@ -1,11 +1,7 @@
 "use client";
-
-import { useRouter } from "next/navigation";
 import AuthForm from "@/components/AuthForm/AuthForm";
 
 export default function LoginPage() {
-  const router = useRouter();
-
   async function handleLogin(email: string, password: string) {
     const res = await fetch("/api/auth/login", {
       method: "POST",

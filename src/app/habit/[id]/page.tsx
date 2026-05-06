@@ -22,6 +22,7 @@ export default function HabitPage() {
   const [editDescription, setEditDescription] = useState("");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [toggling, setToggling] = useState(false);
 
   useEffect(() => {
     if (!habit) return;
@@ -40,6 +41,15 @@ export default function HabitPage() {
       alert("Could not save habit");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleToggle() {
+    setToggling(true);
+    try {
+      await Promise.resolve(toggle());
+    } finally {
+      setToggling(false);
     }
   }
 
@@ -96,9 +106,9 @@ export default function HabitPage() {
           ) : (
             <HabitHeader
               habit={habit}
-              isEditing={isEditing}
               setIsEditing={setIsEditing}
-              toggle={toggle}
+              toggle={handleToggle}
+              toggling={toggling}
             />
           )}
 

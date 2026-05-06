@@ -2,16 +2,16 @@ import { Habit } from "@/types/types";
 
 type Props = {
   habit: Habit;
-  isEditing: boolean;
   setIsEditing: (v: boolean) => void;
   toggle: () => void;
+  toggling?: boolean;
 };
 
 export default function HabitHeader({
   habit,
-  isEditing,
   setIsEditing,
   toggle,
+  toggling = false,
 }: Props) {
   return (
     <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -38,13 +38,20 @@ export default function HabitHeader({
 
         <button
           onClick={toggle}
+          disabled={toggling}
           className={`rounded-md px-4 py-3 text-sm font-semibold text-white transition ${
+            toggling ? "opacity-50 cursor-not-allowed" : ""
+          } ${
             habit.todayCompleted
               ? "bg-[#3b8f55] hover:bg-[#327948]"
               : "bg-[#17201b] hover:bg-[#28352d]"
           }`}
         >
-          {habit.todayCompleted ? "Completed today" : "Mark as done"}
+          {toggling
+            ? "Loading..."
+            : habit.todayCompleted
+              ? "Completed today"
+              : "Mark as done"}
         </button>
       </div>
     </div>
