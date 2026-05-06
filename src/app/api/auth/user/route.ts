@@ -15,7 +15,6 @@ export async function GET(req: NextRequest) {
 
   if (!userId) {
     const refreshToken = req.cookies.get("refreshToken")?.value;
-    console.log("Attempting to refresh with token:", refreshToken);
     if (refreshToken != undefined) {
       try {
         const refreshed = refreshUser(refreshToken);
@@ -39,11 +38,21 @@ export async function GET(req: NextRequest) {
     select: {
       id: true,
       email: true,
+      password: true,
       createdAt: true,
     },
   });
 
-  const response = ok(user);
+  if (!user) {
+    return ok(null);
+  }
+  
+  const response = ok({
+    id: user.id,
+    email: user.email,
+    createdAt: user.createdAt,
+    hasPassword: Boolean(user.password),
+  });
 
   if (newAccessToken && newRefreshToken) {
     setAuthCookies(response, newAccessToken, newRefreshToken);

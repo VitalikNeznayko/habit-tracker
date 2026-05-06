@@ -12,6 +12,7 @@ type UserProfile = {
   id: string;
   email: string;
   createdAt: string;
+  hasPassword: boolean;
 };
 
 type Habit = {
@@ -188,10 +189,9 @@ export default function ProfilePage() {
           <ProfileCard
             email={profile.user.email}
             joinedAt={joinedAt}
+            hasPassword={profile.user.hasPassword}
             onChangePassword={() => setMode("password")}
-            mode={mode}
           />
-
           <div className="space-y-3">
             {mode === "overview" ? (
               <ProfileOverview
