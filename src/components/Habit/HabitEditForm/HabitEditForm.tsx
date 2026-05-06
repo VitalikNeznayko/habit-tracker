@@ -51,6 +51,7 @@ export default function HabitEditForm({
         </p>
 
         <div className="mt-4 space-y-3">
+          {error && <p className="text-sm text-red-600">{error}</p>}
           <input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
@@ -64,8 +65,6 @@ export default function HabitEditForm({
             className="min-h-28 w-full resize-y rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm leading-6 outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
             placeholder="Description, trigger, or a simple note..."
           />
-
-          {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
       </div>
 
