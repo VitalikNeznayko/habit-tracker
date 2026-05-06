@@ -10,7 +10,6 @@ export async function loginUser(email: string, password: string) {
 
   if (!user) throw new Error("INVALID_CREDENTIALS");
 
-  const bcryptStart = Date.now();
   const isValid = await bcrypt.compare(password, user.password);
 
   if (!isValid) throw new Error("INVALID_CREDENTIALS");

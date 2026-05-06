@@ -6,7 +6,7 @@ import { refreshUser } from "@/services/auth.service";
 import { setAuthCookies } from "@/lib/tokens";
 
 export async function GET(req: NextRequest) {
-  let accessToken = req.cookies.get("accessToken")?.value;
+  const accessToken = req.cookies.get("accessToken")?.value;
 
   let userId = getUserIdFromToken(accessToken);
 

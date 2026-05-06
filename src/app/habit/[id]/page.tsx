@@ -28,6 +28,7 @@ export default function HabitPage() {
 
   useEffect(() => {
     if (!habit) return;
+
     setEditTitle(habit.title);
     setEditDescription(habit.description || "");
   }, [habit]);
@@ -91,7 +92,6 @@ export default function HabitPage() {
         <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm sm:p-7">
           {isEditing ? (
             <HabitEditForm
-              habit={habit}
               editTitle={editTitle}
               editDescription={editDescription}
               setEditTitle={setEditTitle}

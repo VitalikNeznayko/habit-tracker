@@ -21,7 +21,7 @@ export function useHabits() {
   }
 
   useEffect(() => {
-    load();
+    void load();
   }, []);
 
   async function toggle(id: string) {
