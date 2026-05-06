@@ -36,11 +36,12 @@ Create a `.env` file:
 DATABASE_URL=
 
 JWT_SECRET=
+JWT_REFRESH_SECRET=
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=
 ```
 
 ## Run Development Server
