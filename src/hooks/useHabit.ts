@@ -20,12 +20,16 @@ export function useHabit(id: string) {
     setHabit(data);
     setLoading(false);
   }, [id, router]);
-  
+
   useEffect(() => {
     if (!id) return;
 
-    void load();
-  }, [id]);
+    async function init() {
+      await load();
+    }
+
+    void init();
+  }, [id, load]);
 
   async function toggle() {
     if (toggling) return;

@@ -14,7 +14,7 @@ export default function HabitHeader({
   toggling = false,
 }: Props) {
   return (
-    <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+    <div className="mb-4 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold uppercase text-[#6e7f72]">
           Habit details
