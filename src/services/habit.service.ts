@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { getToday, normalizeDay } from "@/lib/date";
+import { getToday, normalizeDay, formatDayKey } from "@/lib/date";
 import { NotFoundError } from "@/lib/errors";
 
 type CheckInDate = {
@@ -203,5 +203,6 @@ export async function getHabitByIdWithStats(userId: string, habitId: string) {
     currentStreak: getCurrentStreakFromCheckIns(checkinsDesc),
     longestStreak: getLongestStreakFromCheckIns(checkins),
     progressPercent: getProgressPercentFromCheckIns(checkins),
+    checkinDays: checkins.map((c) => formatDayKey(normalizeDay(c.date))),
   };
 }

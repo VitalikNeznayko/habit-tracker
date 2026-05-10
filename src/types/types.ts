@@ -6,6 +6,7 @@ export type Habit = {
   currentStreak: number;
   longestStreak: number;
   progressPercent: number;
+  checkinDays: string[];
 };
 
 export type Habits = {
@@ -14,4 +15,12 @@ export type Habits = {
   description?: string | null;
   todayCompleted: boolean;
   currentStreak: number;
+};
+
+export type Cell = {
+  date: Date;
+  key: string;
+  inRange: boolean;
+  isToday: boolean;
+  completed: boolean;
 };
