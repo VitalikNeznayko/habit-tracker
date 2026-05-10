@@ -1,5 +1,7 @@
 "use client";
 
+import { Loader } from "@/components/Loader/Loader";
+
 type DeleteHabitModalProps = {
   open: boolean;
   title: string;
@@ -42,7 +44,7 @@ export default function DeleteHabitModal({
             disabled={loading}
             className="rounded-md border border-[#d9a7a7] bg-[#fff8f8] px-4 py-3 text-sm font-semibold text-[#8a2f2f] transition hover:border-[#bd7676] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? "Deleting..." : "Delete"}
+            {loading ? <Loader size="sm" label="Deleting..." /> : "Delete"}
           </button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import ProfileCard from "@/components/Profile/ProfileCard/ProfileCard";
 import ProfileOverview from "@/components/Profile/ProfileOverview/ProfileOverview";
 import ChangePasswordForm from "@/components/Profile/ChangePasswordForm/ChangePasswordForm";
 import ActiveHabits from "@/components/Profile/ActiveHabits/ActiveHabits";
+import { PageLoader } from "@/components/Loader/Loader";
 
 type UserProfile = {
   id: string;
@@ -148,13 +149,7 @@ export default function ProfilePage() {
   }
 
   if (!profile) {
-    return (
-      <main className="grid min-h-screen place-items-center bg-[#f6f7f4] px-5 text-[#17201b]">
-        <div className="rounded-lg border border-[#dce3dc] bg-white px-5 py-4 text-sm font-semibold shadow-sm">
-          Loading profile...
-        </div>
-      </main>
-    );
+    return <PageLoader label="Loading profile..." />;
   }
 
   const joinedAt = new Intl.DateTimeFormat("en", {

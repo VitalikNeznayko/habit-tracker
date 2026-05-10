@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { loginSchema, registerSchema } from "@/lib/validators";
+import { Loader } from "@/components/Loader/Loader";
 
 type AuthFormProps = {
   title: string;
@@ -93,7 +94,7 @@ export default function AuthForm({
           disabled={loading}
           className="mt-5 w-full rounded-md bg-[#17201b] py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {loading ? `${submitLabel}...` : submitLabel}
+          {loading ? <Loader size="sm" label={`${submitLabel}...`} /> : submitLabel}
         </button>
 
         <p className="mt-4 text-center text-sm text-[#6e7f72]">

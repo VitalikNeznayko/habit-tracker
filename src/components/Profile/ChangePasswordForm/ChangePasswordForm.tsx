@@ -1,3 +1,5 @@
+import { Loader } from "@/components/Loader/Loader";
+
 type Props = {
   currentPassword: string;
   newPassword: string;
@@ -76,7 +78,11 @@ export default function ChangePasswordForm({
           disabled={passwordLoading}
           className="w-full rounded-md bg-[#17201b] py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {passwordLoading ? "Updating..." : "Update password"}
+          {passwordLoading ? (
+            <Loader size="sm" label="Updating..." />
+          ) : (
+            "Update password"
+          )}
         </button>
       </div>
     </div>

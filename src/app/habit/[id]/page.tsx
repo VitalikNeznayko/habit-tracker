@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 import { useHabit } from "@/hooks/useHabit";
 
 import HabitHeader from "@/components/Habit/HabitHeader/HabitHeader";
@@ -11,12 +11,23 @@ import HabitEditForm from "@/components/Habit/HabitEditForm/HabitEditForm";
 import HabitDangerZone from "@/components/Habit/HabitDangerZone/HabitDangerZone";
 import DashboardStats from "@/components/DashboardStats/DashboardStats";
 import DeleteHabitModal from "@/components/Habit/DeleteHabitModal/DeleteHabitModal";
+import { PageLoader } from "@/components/Loader/Loader";
 
 export default function HabitPage() {
   const params = useParams();
   const id = params.id as string;
 
-  const { habit, loading, toggle, save, remove, stats } = useHabit(id);
+  const {
+    habit,
+    loading,
+    notFound: habitNotFound,
+    toggle,
+    save,
+    remove,
+    stats,
+  } = useHabit(id);
+
+  if (habitNotFound) notFound();
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -72,13 +83,7 @@ export default function HabitPage() {
   }
 
   if (loading || !habit) {
-    return (
-      <main className="grid min-h-screen place-items-center bg-[#f6f7f4] px-5 text-[#17201b]">
-        <div className="rounded-lg border border-[#dce3dc] bg-white px-5 py-4 text-sm font-semibold shadow-sm">
-          Loading habit...
-        </div>
-      </main>
-    );
+    return <PageLoader label="Loading habit..." />;
   }
 
   return (

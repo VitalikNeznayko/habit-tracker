@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { updateHabitSchema } from "@/lib/validators";
+import { Loader } from "@/components/Loader/Loader";
 
 type Props = {
   editTitle: string;
@@ -71,7 +72,7 @@ export default function HabitEditForm({
             disabled={saving}
             className="rounded-md bg-[#17201b] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {saving ? "Saving..." : "Save"}
+            {saving ? <Loader size="sm" label="Saving..." /> : "Save"}
           </button>
 
           <button

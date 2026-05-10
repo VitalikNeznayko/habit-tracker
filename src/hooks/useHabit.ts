@@ -7,12 +7,19 @@ export function useHabit(id: string) {
   const router = useRouter();
   const [habit, setHabit] = useState<Habit | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   const load = useCallback(async () => {
     const res = await fetch(`/api/habits/${id}`);
 
     if (res.status === 401) {
       router.replace("/login");
+      return;
+    }
+
+    if (res.status === 404) {
+      setNotFound(true);
+      setLoading(false);
       return;
     }
 
@@ -95,6 +102,7 @@ export function useHabit(id: string) {
   return {
     habit,
     loading,
+    notFound,
     toggle,
     save,
     remove,
