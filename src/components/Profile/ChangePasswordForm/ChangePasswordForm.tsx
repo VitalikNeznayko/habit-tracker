@@ -51,6 +51,7 @@ export default function ChangePasswordForm({
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           className="w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          suppressHydrationWarning
         />
 
         <input
@@ -59,6 +60,7 @@ export default function ChangePasswordForm({
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           className="w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          suppressHydrationWarning
         />
 
         <input
@@ -67,6 +69,7 @@ export default function ChangePasswordForm({
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           className="w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          suppressHydrationWarning
         />
 
         {passwordError && (
@@ -77,6 +80,7 @@ export default function ChangePasswordForm({
           onClick={onSubmit}
           disabled={passwordLoading}
           className="w-full rounded-md bg-[#17201b] py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
+          suppressHydrationWarning
         >
           {passwordLoading ? (
             <Loader size="sm" label="Updating..." />
