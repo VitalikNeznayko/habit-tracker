@@ -11,6 +11,7 @@ import HabitEditForm from "@/components/Habit/HabitEditForm/HabitEditForm";
 import HabitDangerZone from "@/components/Habit/HabitDangerZone/HabitDangerZone";
 import DashboardStats from "@/components/DashboardStats/DashboardStats";
 import DeleteHabitModal from "@/components/Habit/DeleteHabitModal/DeleteHabitModal";
+import HabitHeatmap from "@/components/Habit/HabitHeatmap/HabitHeatmap";
 import { PageLoader } from "@/components/Loader/Loader";
 
 export default function HabitPage() {
@@ -132,6 +133,8 @@ export default function HabitPage() {
 
           <ProgressBar habit={habit} />
         </section>
+
+        <HabitHeatmap checkinDays={habit.checkinDays} />
 
         <HabitDangerZone
           onDelete={() => setDeleteModalOpen(true)}

@@ -115,7 +115,7 @@ async function Home() {
         <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="grid h-14 w-14 place-items-center rounded-lg bg-[#17201b] text-xl font-bold text-white">
-              H
+              Y
             </div>
             <div>
               <p className="font-semibold">your@gmail.com</p>
