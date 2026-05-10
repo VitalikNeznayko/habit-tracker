@@ -1,26 +1,26 @@
-import { NextRequest } from "next/server";
-import { getUserIdFromToken } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { requireUserId } from "@/lib/auth";
 import { ok, error } from "@/lib/api";
 import { toggleCheckIn } from "@/services/checkin.service";
+import { toggleCheckInSchema } from "@/lib/validators";
+import { NotFoundError } from "@/lib/errors";
 
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get("accessToken")?.value;
-  const userId = getUserIdFromToken(token);
-
-  if (!userId) return error("Unauthorized", 401);
+  const userId = requireUserId(req);
+  if (userId instanceof NextResponse) return userId;
 
   const body = await req.json();
+  const parsed = toggleCheckInSchema.safeParse(body);
 
-  if (!body.habitId) {
-    return error("habitId is required", 400);
+  if (!parsed.success) {
+    return error(parsed.error.issues[0].message, 400);
   }
 
   try {
-    const result = await toggleCheckIn(userId, body.habitId);
-
+    const result = await toggleCheckIn(userId, parsed.data.habitId);
     return ok(result);
   } catch (e: unknown) {
-    if (e instanceof Error && e.message === "NOT_FOUND") {
+    if (e instanceof NotFoundError) {
       return error("Not found", 404);
     }
 

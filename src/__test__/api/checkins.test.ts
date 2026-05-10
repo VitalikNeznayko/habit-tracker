@@ -10,6 +10,7 @@ vi.mock("@/services/checkin.service", () => ({
 
 vi.mock("@/lib/auth", () => ({
   getUserIdFromToken: vi.fn(() => "user-id"),
+  requireUserId: vi.fn(() => "user-id"),
 }));
 
 describe("POST /api/checkins", () => {
@@ -26,7 +27,7 @@ describe("POST /api/checkins", () => {
       },
 
       json: async () => ({
-        habitId: "habit-id",
+        habitId: "123e4567-e89b-42d3-a456-426614174000",
       }),
     } as never;
 

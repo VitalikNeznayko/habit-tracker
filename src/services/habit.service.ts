@@ -1,23 +1,17 @@
-
 import { prisma } from "@/lib/prisma";
-import { getToday } from "@/lib/date";
+import { getToday, normalizeDay } from "@/lib/date";
+import { NotFoundError } from "@/lib/errors";
 
 type CheckInDate = {
   date: Date;
 };
 
-function normalize(date: Date) {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
-
 function getCurrentStreakFromCheckIns(checkins: CheckInDate[]) {
   if (!checkins.length) return 0;
 
-  const normalizeDate = (d: Date) => normalize(d).getTime();
-
-  const datesSet = new Set(checkins.map((c) => normalizeDate(c.date)));
+  const datesSet = new Set(
+    checkins.map((c) => normalizeDay(c.date).getTime()),
+  );
 
   const today = getToday();
   const todayTime = today.getTime();
@@ -39,7 +33,7 @@ function getCurrentStreakFromCheckIns(checkins: CheckInDate[]) {
   let streak = 0;
 
   while (true) {
-    const time = normalize(currentDate).getTime();
+    const time = normalizeDay(currentDate).getTime();
 
     if (datesSet.has(time)) {
       streak++;
@@ -59,8 +53,8 @@ function getLongestStreakFromCheckIns(checkins: CheckInDate[]) {
   let current = 1;
 
   for (let i = 1; i < checkins.length; i++) {
-    const prev = normalize(checkins[i - 1].date);
-    const curr = normalize(checkins[i].date);
+    const prev = normalizeDay(checkins[i - 1].date);
+    const curr = normalizeDay(checkins[i].date);
     const diff = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
 
     if (diff === 1) {
@@ -74,14 +68,15 @@ function getLongestStreakFromCheckIns(checkins: CheckInDate[]) {
   return Math.max(longest, current);
 }
 
+const PROGRESS_WINDOW_DAYS = 30;
+
 function getProgressPercentFromCheckIns(checkins: CheckInDate[]) {
-  const days = 30;
   const fromDate = getToday();
-  fromDate.setDate(fromDate.getDate() - days);
+  fromDate.setDate(fromDate.getDate() - PROGRESS_WINDOW_DAYS);
 
   const completedDays = checkins.filter((check) => check.date >= fromDate).length;
 
-  return Math.round((completedDays / days) * 100);
+  return Math.round((completedDays / PROGRESS_WINDOW_DAYS) * 100);
 }
 
 export async function createHabit(
@@ -121,7 +116,7 @@ export async function getUserHabitsWithStats(userId: string) {
   return habits.map(({ checkins, ...habit }) => ({
     ...habit,
     todayCompleted: checkins.some(
-      (check) => normalize(check.date).getTime() === today.getTime(),
+      (check) => normalizeDay(check.date).getTime() === today.getTime(),
     ),
     currentStreak: getCurrentStreakFromCheckIns(checkins),
   }));
@@ -138,7 +133,7 @@ export async function updateHabit(
   });
 
   if (!habit) {
-    throw new Error("NOT_FOUND");
+    throw new NotFoundError();
   }
 
   return prisma.habit.update({
@@ -153,7 +148,7 @@ export async function deleteHabit(userId: string, habitId: string) {
   });
 
   if (!habit) {
-    throw new Error("NOT_FOUND");
+    throw new NotFoundError();
   }
 
   await prisma.habit.delete({
@@ -172,7 +167,7 @@ export async function getHabitById(userId: string, habitId: string) {
   });
 
   if (!habit) {
-    throw new Error("NOT_FOUND");
+    throw new NotFoundError();
   }
 
   return habit;
@@ -194,7 +189,7 @@ export async function getHabitByIdWithStats(userId: string, habitId: string) {
   });
 
   if (!habit) {
-    throw new Error("NOT_FOUND");
+    throw new NotFoundError();
   }
 
   const checkinsDesc = [...habit.checkins].reverse();
@@ -203,7 +198,7 @@ export async function getHabitByIdWithStats(userId: string, habitId: string) {
   return {
     ...habitData,
     todayCompleted: checkins.some(
-      (check) => normalize(check.date).getTime() === today.getTime(),
+      (check) => normalizeDay(check.date).getTime() === today.getTime(),
     ),
     currentStreak: getCurrentStreakFromCheckIns(checkinsDesc),
     longestStreak: getLongestStreakFromCheckIns(checkins),

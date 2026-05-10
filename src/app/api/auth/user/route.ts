@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   if (!userId) {
     const refreshToken = req.cookies.get("refreshToken")?.value;
-    if (refreshToken != undefined) {
+    if (refreshToken) {
       try {
         const refreshed = refreshUser(refreshToken);
 

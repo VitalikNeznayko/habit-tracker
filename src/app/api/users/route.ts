@@ -1,21 +1,16 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
 import { prisma } from "@/lib/prisma";
 import { ok, error } from "@/lib/api";
-import { getUserIdFromToken } from "@/lib/auth";
+import { requireUserId } from "@/lib/auth";
 import { changePasswordSchema } from "@/lib/validators";
 
 export async function PATCH(req: NextRequest) {
+  const userId = requireUserId(req);
+  if (userId instanceof NextResponse) return userId;
+
   try {
-    const token = req.cookies.get("accessToken")?.value;
-    
-    const userId = getUserIdFromToken(token);
-
-    if (!userId) {
-      return error("Unauthorized", 401);
-    }
-
     const body = await req.json();
 
     const result = changePasswordSchema.safeParse(body);

@@ -57,3 +57,7 @@ export const updateHabitSchema = z.object({
   title: titleSchema,
   description: descriptionSchema,
 });
+
+export const toggleCheckInSchema = z.object({
+  habitId: z.string().min(1, "habitId is required"),
+});
