@@ -82,7 +82,7 @@ export default function HabitHeatmap({ checkinDays }: Props) {
               {WEEKDAY_LABELS.map((label, i) => (
                 <div
                   key={i}
-                  className="h-[14px] text-[10px] leading-[14px] text-[#91a094]"
+                  className="h-[22px] text-[11px] leading-[22px] text-[#91a094]"
                 >
                   {label}
                 </div>

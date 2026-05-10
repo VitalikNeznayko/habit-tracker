@@ -8,7 +8,7 @@ type Props = {
 
 export default function HeatCell({ cell, isSelected, onClick }: Props) {
   if (!cell.inRange) {
-    return <div aria-hidden className="h-[14px] w-[14px]" />;
+    return <div aria-hidden className="h-[22px] w-[22px]" />;
   }
 
   const base = cell.completed
@@ -24,7 +24,7 @@ export default function HeatCell({ cell, isSelected, onClick }: Props) {
     <button
       onClick={onClick}
       title={`${cell.key} — ${cell.completed ? "Completed" : "Not completed"}`}
-      className={`h-[14px] w-[14px] rounded-sm transition ${base} ${ring}`}
+      className={`h-[22px] w-[22px] rounded-sm transition ${base} ${ring}`}
       aria-label={`${cell.key}: ${cell.completed ? "completed" : "not completed"}`}
     />
   );

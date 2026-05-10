@@ -40,7 +40,7 @@ export default function MonthLabels({ grid }: Props) {
         return (
           <div
             key={wi}
-            className="w-[14px] text-[10px] leading-3 text-[#91a094]"
+            className="w-[22px] text-[10px] leading-3 text-[#91a094]"
           >
             {label?.month ?? ""}
           </div>
