@@ -1,18 +1,20 @@
-import { NextRequest } from "next/server";
-import { getUserIdFromToken } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { requireUserId } from "@/lib/auth";
 import { ok, error } from "@/lib/api";
-import { updateHabit, deleteHabit } from "@/services/habit.service";
+import {
+  updateHabit,
+  deleteHabit,
+  getHabitByIdWithStats,
+} from "@/services/habit.service";
 import { updateHabitSchema } from "@/lib/validators";
-import { getHabitByIdWithStats } from "@/services/habit.service";
+import { NotFoundError } from "@/lib/errors";
 
 export async function PUT(
   req: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
-  const token = req.cookies.get("accessToken")?.value;
-  const userId = getUserIdFromToken(token);
-
-  if (!userId) return error("Unauthorized", 401);
+  const userId = requireUserId(req);
+  if (userId instanceof NextResponse) return userId;
 
   const params = await context.params;
 
@@ -33,12 +35,11 @@ export async function PUT(
 
     return ok(habit);
   } catch (e: unknown) {
-    console.error("UPDATE ERROR:", e);
-
-    if (e instanceof Error && e.message === "NOT_FOUND") {
+    if (e instanceof NotFoundError) {
       return error("Not found", 404);
     }
 
+    console.error("UPDATE ERROR:", e);
     return error(e instanceof Error ? e.message : "Server error", 500);
   }
 }
@@ -47,19 +48,16 @@ export async function DELETE(
   req: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
-  const token = req.cookies.get("accessToken")?.value;
-  const userId = getUserIdFromToken(token);
-
-  if (!userId) return error("Unauthorized", 401);
+  const userId = requireUserId(req);
+  if (userId instanceof NextResponse) return userId;
 
   const params = await context.params;
-
 
   try {
     const result = await deleteHabit(userId, params.id);
     return ok(result);
   } catch (e: unknown) {
-    if (e instanceof Error && e.message === "NOT_FOUND") {
+    if (e instanceof NotFoundError) {
       return error("Not found", 404);
     }
 
@@ -71,10 +69,8 @@ export async function GET(
   req: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
-  const token = req.cookies.get("accessToken")?.value;
-  const userId = getUserIdFromToken(token);
-
-  if (!userId) return error("Unauthorized", 401);
+  const userId = requireUserId(req);
+  if (userId instanceof NextResponse) return userId;
 
   const params = await context.params;
 
@@ -82,7 +78,7 @@ export async function GET(
     const habit = await getHabitByIdWithStats(userId, params.id);
     return ok(habit);
   } catch (e: unknown) {
-    if (e instanceof Error && e.message === "NOT_FOUND") {
+    if (e instanceof NotFoundError) {
       return error("Not found", 404);
     }
 

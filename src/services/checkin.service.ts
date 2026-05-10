@@ -1,19 +1,15 @@
 import { prisma } from "@/lib/prisma";
-
-function normalize(date: Date) {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
+import { normalizeDay } from "@/lib/date";
+import { NotFoundError } from "@/lib/errors";
 
 export async function toggleCheckIn(userId: string, habitId: string) {
   const habit = await prisma.habit.findFirst({
     where: { id: habitId, userId },
   });
 
-  if (!habit) throw new Error("NOT_FOUND");
+  if (!habit) throw new NotFoundError();
 
-  const today = normalize(new Date());
+  const today = normalizeDay(new Date());
 
   const existing = await prisma.checkIn.findUnique({
     where: {

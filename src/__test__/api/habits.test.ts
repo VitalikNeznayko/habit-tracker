@@ -11,6 +11,7 @@ vi.mock("@/services/habit.service", () => ({
 
 vi.mock("@/lib/auth", () => ({
   getUserIdFromToken: vi.fn(() => "user-id"),
+  requireUserId: vi.fn(() => "user-id"),
 }));
 
 describe("GET /api/habits", () => {
