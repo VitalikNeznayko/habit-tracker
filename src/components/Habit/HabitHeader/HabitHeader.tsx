@@ -1,4 +1,5 @@
 import { Habit } from "@/types/types";
+import { Loader } from "@/components/Loader/Loader";
 
 type Props = {
   habit: Habit;
@@ -47,11 +48,13 @@ export default function HabitHeader({
               : "bg-[#17201b] hover:bg-[#28352d]"
           }`}
         >
-          {toggling
-            ? "Loading..."
-            : habit.todayCompleted
-              ? "Completed today"
-              : "Mark as done"}
+          {toggling ? (
+            <Loader size="sm" />
+          ) : habit.todayCompleted ? (
+            "Completed today"
+          ) : (
+            "Mark as done"
+          )}
         </button>
       </div>
     </div>

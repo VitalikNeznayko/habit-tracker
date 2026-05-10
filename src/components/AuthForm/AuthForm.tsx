@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { loginSchema, registerSchema } from "@/lib/validators";
+import { Loader } from "@/components/Loader/Loader";
 
 type AuthFormProps = {
   title: string;
@@ -73,6 +74,7 @@ export default function AuthForm({
             if (e.key === "Enter") handleSubmit();
           }}
           className="mt-6 w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          suppressHydrationWarning
         />
 
         <input
@@ -84,6 +86,7 @@ export default function AuthForm({
             if (e.key === "Enter") handleSubmit();
           }}
           className="mt-3 w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          suppressHydrationWarning
         />
 
         {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
@@ -92,8 +95,9 @@ export default function AuthForm({
           onClick={handleSubmit}
           disabled={loading}
           className="mt-5 w-full rounded-md bg-[#17201b] py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
+          suppressHydrationWarning
         >
-          {loading ? `${submitLabel}...` : submitLabel}
+          {loading ? <Loader size="sm" label={`${submitLabel}...`} /> : submitLabel}
         </button>
 
         <p className="mt-4 text-center text-sm text-[#6e7f72]">

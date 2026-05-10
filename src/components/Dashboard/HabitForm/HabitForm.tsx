@@ -42,6 +42,7 @@ export default function HabitForm({ onSubmit }: HabitFormProps) {
           }}
           placeholder="New habit..."
           className="min-h-11 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          suppressHydrationWarning
         />
 
         <input
@@ -52,11 +53,13 @@ export default function HabitForm({ onSubmit }: HabitFormProps) {
           }}
           placeholder="Description or trigger..."
           className="min-h-11 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          suppressHydrationWarning
         />
 
         <button
           onClick={handleSubmit}
           className="min-h-11 rounded-md bg-[#17201b] px-5 text-sm font-semibold text-white transition hover:bg-[#28352d]"
+          suppressHydrationWarning
         >
           Add habit
         </button>

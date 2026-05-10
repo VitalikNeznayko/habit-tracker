@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { Loader } from "@/components/Loader/Loader";
 
 type HabitCardProps = {
   id: string;
@@ -54,7 +55,7 @@ export default function HabitCard({
               : "border-[#cbd4cc] bg-white text-transparent hover:border-[#3b8f55]"
           }`}
         >
-          {isLoading ? "..." : "✓"}
+          {isLoading ? <Loader size="sm" /> : "✓"}
         </button>
 
         <div className="min-w-0">

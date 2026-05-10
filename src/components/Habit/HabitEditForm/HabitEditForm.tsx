@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { updateHabitSchema } from "@/lib/validators";
+import { Loader } from "@/components/Loader/Loader";
 
 type Props = {
   editTitle: string;
@@ -53,6 +54,7 @@ export default function HabitEditForm({
             onChange={(e) => setEditTitle(e.target.value)}
             className="w-full rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-base font-semibold outline-none transition focus:border-[#3b8f55] focus:bg-white"
             placeholder="Habit title"
+            suppressHydrationWarning
           />
 
           <textarea
@@ -60,6 +62,7 @@ export default function HabitEditForm({
             onChange={(e) => setEditDescription(e.target.value)}
             className="min-h-28 w-full resize-y rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 py-3 text-sm leading-6 outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
             placeholder="Description, trigger, or a simple note..."
+            suppressHydrationWarning
           />
         </div>
       </div>
@@ -70,13 +73,15 @@ export default function HabitEditForm({
             onClick={handleSave}
             disabled={saving}
             className="rounded-md bg-[#17201b] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
+            suppressHydrationWarning
           >
-            {saving ? "Saving..." : "Save"}
+            {saving ? <Loader size="sm" label="Saving..." /> : "Save"}
           </button>
 
           <button
             onClick={onCancel}
             className="rounded-md border border-[#cbd4cc] bg-white px-4 py-3 text-sm font-semibold transition hover:border-[#9fab9f]"
+            suppressHydrationWarning
           >
             Cancel
           </button>
