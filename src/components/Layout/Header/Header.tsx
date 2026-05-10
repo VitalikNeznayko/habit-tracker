@@ -30,14 +30,17 @@ function Header({
     window.location.href = "/login";
   }
   return (
-    <header className="border-b border-[#dce3dc] bg-[#f6f7f4]/95 px-5 py-4 sm:px-8">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-        <Link href="/" className="text-lg font-semibold">
+    <header className="sticky top-0 z-40 border-b border-[#dce3dc]/60 bg-[#f6f7f4]/70 px-5 py-4 backdrop-blur-md backdrop-saturate-150 sm:px-8">
+      <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 md:grid md:grid-cols-3">
+        <Link
+          href="/"
+          className="text-lg font-semibold tracking-tight text-[#17201b]"
+        >
           Habit Tracker
         </Link>
 
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          {isLoggedIn ? (
+        <div className="flex items-center justify-center gap-1">
+          {isLoggedIn && (
             <>
               <Link
                 href="/dashboard"
@@ -51,13 +54,18 @@ function Header({
               >
                 Profile
               </Link>
-              <button
-                onClick={logout}
-                className="rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
-              >
-                Logout
-              </button>
             </>
+          )}
+        </div>
+
+        <div className="flex items-center justify-end gap-2">
+          {isLoggedIn ? (
+            <button
+              onClick={logout}
+              className="rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
+            >
+              Logout
+            </button>
           ) : loaded ? (
             <>
               <Link
