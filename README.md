@@ -10,6 +10,7 @@ Habit Tracker is a fullstack web application for tracking daily habits and monit
 - Daily habit check-ins
 - Streak tracking
 - Progress statistics
+- Heatmap habit
 - Responsive UI
 
 ## Technologies
