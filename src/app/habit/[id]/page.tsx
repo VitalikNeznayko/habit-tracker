@@ -89,10 +89,10 @@ export default function HabitPage() {
 
   return (
     <main className="bg-[#f6f7f4] text-[#17201b]">
-      <div className="mx-auto max-w-4xl px-5 py-6 sm:px-8">
+      <div className="mx-auto max-w-4xl px-4 py-5 sm:px-8 sm:py-6">
         <Link
           href="/dashboard"
-          className="inline-flex rounded-md border border-[#cbd4cc] bg-white px-3 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
+          className="inline-flex min-h-11 items-center rounded-md border border-[#cbd4cc] bg-white px-3 py-2 text-sm font-semibold text-[#3c493f] transition hover:border-[#9fab9f]"
         >
           Back to dashboard
         </Link>

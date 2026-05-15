@@ -32,7 +32,7 @@ export default function HabitForm({ onSubmit }: HabitFormProps) {
   }
 
   return (
-    <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm">
+    <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm sm:p-5">
       <div className="grid gap-3 lg:grid-cols-[1fr_1.3fr_auto]">
         <input
           value={title}
@@ -41,7 +41,7 @@ export default function HabitForm({ onSubmit }: HabitFormProps) {
             if (e.key === "Enter") handleSubmit();
           }}
           placeholder="New habit..."
-          className="min-h-11 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          className="min-h-12 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
           suppressHydrationWarning
         />
 
@@ -52,13 +52,13 @@ export default function HabitForm({ onSubmit }: HabitFormProps) {
             if (e.key === "Enter") handleSubmit();
           }}
           placeholder="Description or trigger..."
-          className="min-h-11 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
+          className="min-h-12 rounded-md border border-[#cbd4cc] bg-[#fbfcfa] px-3 text-sm outline-none transition placeholder:text-[#91a094] focus:border-[#3b8f55] focus:bg-white"
           suppressHydrationWarning
         />
 
         <button
           onClick={handleSubmit}
-          className="min-h-11 rounded-md bg-[#17201b] px-5 text-sm font-semibold text-white transition hover:bg-[#28352d]"
+          className="min-h-12 rounded-md bg-[#17201b] px-5 text-sm font-semibold text-white transition hover:bg-[#28352d] lg:px-6"
           suppressHydrationWarning
         >
           Add habit

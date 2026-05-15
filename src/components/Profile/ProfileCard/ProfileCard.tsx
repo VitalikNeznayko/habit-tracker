@@ -27,7 +27,7 @@ export default function ProfileCard({
         (mode === "overview" && (
           <button
             onClick={onChangePassword}
-            className="mt-5 rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold transition hover:border-[#9fab9f]"
+            className="mt-5 inline-flex min-h-11 items-center justify-center rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold transition hover:border-[#9fab9f]"
           >
             Change password
           </button>

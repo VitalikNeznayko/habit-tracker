@@ -169,14 +169,16 @@ export default function ProfilePage() {
 
   return (
     <main className="bg-[#f6f7f4] text-[#17201b]">
-      <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-8 sm:py-6">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase text-[#6e7f72]">
               Profile
             </p>
 
-            <h1 className="mt-2 text-4xl font-bold">Your habit space</h1>
+            <h1 className="mt-2 text-3xl font-bold leading-tight sm:text-4xl">
+              Your habit space
+            </h1>
           </div>
         </header>
 
