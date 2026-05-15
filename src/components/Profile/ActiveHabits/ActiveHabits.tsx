@@ -40,11 +40,11 @@ export default function ActiveHabits({ habits }: Props) {
             <Link
               key={habit.id}
               href={`/habit/${habit.id}`}
-              className="rounded-md border border-[#eef1ee] bg-[#fbfcfa] p-4 transition hover:border-[#cbd4cc] hover:bg-white"
+              className="min-w-0 rounded-md border border-[#eef1ee] bg-[#fbfcfa] p-4 transition hover:border-[#cbd4cc] hover:bg-white"
             >
-              <h3 className="font-semibold">{habit.title}</h3>
+              <h3 className="break-words font-semibold">{habit.title}</h3>
 
-              <p className="mt-1 text-sm leading-5 text-[#6e7f72]">
+              <p className="mt-1 break-words text-sm leading-5 text-[#6e7f72]">
                 {habit.description || "No description yet."}
               </p>
             </Link>

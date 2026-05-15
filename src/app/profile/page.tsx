@@ -182,14 +182,14 @@ export default function ProfilePage() {
           </div>
         </header>
 
-        <section className="mt-8 grid gap-4 lg:grid-cols-[360px_1fr]">
+        <section className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
           <ProfileCard
             email={profile.user.email}
             joinedAt={joinedAt}
             hasPassword={profile.user.hasPassword}
             onChangePassword={() => setMode("password")}
           />
-          <div className="space-y-3">
+          <div className="min-w-0 space-y-3">
             {mode === "overview" ? (
               <ProfileOverview
                 habitsCount={profile.habits.length}

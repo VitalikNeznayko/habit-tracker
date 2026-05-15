@@ -14,12 +14,14 @@ export default function ProfileCard({
   hasPassword,
 }: Props) {
   return (
-    <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
+    <div className="min-w-0 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
       <div className="grid h-16 w-16 place-items-center rounded-lg bg-[#17201b] text-2xl font-bold text-white">
         {email.slice(0, 1).toUpperCase()}
       </div>
 
-      <h2 className="mt-5 break-words text-2xl font-bold">{email}</h2>
+      <h2 className="mt-5 break-all text-xl font-bold leading-tight sm:text-2xl">
+        {email}
+      </h2>
 
       <p className="mt-2 text-sm text-[#6e7f72]">Joined {joinedAt}</p>
 

@@ -9,7 +9,7 @@ export default function DashboardStats({ stats }: { stats: Stat[] }) {
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm"
+          className="min-w-0 rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm"
         >
           <p className="text-sm font-medium text-[#6e7f72]">{stat.label}</p>
           <p className="mt-2 break-words text-2xl font-bold leading-tight sm:text-3xl">

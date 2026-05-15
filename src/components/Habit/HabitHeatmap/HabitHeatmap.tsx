@@ -52,7 +52,7 @@ export default function HabitHeatmap({ checkinDays }: Props) {
   }, [grid, selectedKey]);
 
   return (
-    <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-4 shadow-sm sm:p-5">
+    <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm font-semibold uppercase text-[#6e7f72]">
@@ -73,8 +73,8 @@ export default function HabitHeatmap({ checkinDays }: Props) {
         />
       </header>
 
-      <div className="mt-5 -mx-1 overflow-x-auto px-1">
-        <div className="mx-auto flex min-w-fit flex-col gap-2">
+      <div className="mt-5 overflow-x-auto sm:overflow-x-auto">
+        <div className="flex w-fit flex-col gap-2 sm:mx-auto">
           <MonthLabels grid={grid} />
 
           <div className="flex gap-1">

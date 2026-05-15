@@ -32,8 +32,8 @@ export default function ProfileOverview({
         ]}
       />
 
-      <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm sm:col-span-3">
-        <div className="flex items-center justify-between text-sm">
+      <div className="min-w-0 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm sm:col-span-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           <span className="font-semibold text-[#3c493f]">Daily completion</span>
 
           <span className="text-[#6e7f72]">{completionPercent}%</span>
