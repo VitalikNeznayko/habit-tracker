@@ -67,12 +67,12 @@ export default function HabitEditForm({
         </div>
       </div>
 
-      <div className="ml-5 flex flex-wrap gap-2 sm:justify-end">
+      <div className="flex flex-col gap-2 sm:ml-5 sm:flex-row sm:flex-wrap sm:justify-end">
         <>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-md bg-[#17201b] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-[#17201b] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#28352d] disabled:cursor-not-allowed disabled:opacity-60"
             suppressHydrationWarning
           >
             {saving ? <Loader size="sm" label="Saving..." /> : "Save"}
@@ -80,7 +80,7 @@ export default function HabitEditForm({
 
           <button
             onClick={onCancel}
-            className="rounded-md border border-[#cbd4cc] bg-white px-4 py-3 text-sm font-semibold transition hover:border-[#9fab9f]"
+            className="inline-flex min-h-11 items-center justify-center rounded-md border border-[#cbd4cc] bg-white px-4 py-3 text-sm font-semibold transition hover:border-[#9fab9f]"
             suppressHydrationWarning
           >
             Cancel

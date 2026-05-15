@@ -20,12 +20,14 @@ export default function Dashboard() {
 
   return (
     <main className="bg-[#f6f7f4] text-[#17201b]">
-      <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-8 sm:py-6">
         <div className="gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold uppercase text-[#6e7f72]">
             Dashboard
           </p>
-          <h1 className="mt-2 text-4xl font-bold">Today habits</h1>
+          <h1 className="mt-2 text-3xl font-bold leading-tight sm:text-4xl">
+            Today habits
+          </h1>
         </div>
 
         <div className="mt-8">

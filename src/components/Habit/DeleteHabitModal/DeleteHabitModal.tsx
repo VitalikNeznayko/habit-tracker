@@ -20,8 +20,8 @@ export default function DeleteHabitModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-md rounded-xl border border-[#dce3dc] bg-white p-6 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-4 py-4 sm:items-center">
+      <div className="w-full max-w-md rounded-t-2xl border border-[#dce3dc] bg-white p-5 shadow-xl sm:rounded-xl sm:p-6">
         <h2 className="text-xl font-bold text-[#17201b]">Delete habit?</h2>
 
         <p className="mt-3 text-sm leading-6 text-[#6e7f72]">
@@ -30,11 +30,11 @@ export default function DeleteHabitModal({
           action cannot be undone.
         </p>
 
-        <div className="mt-6 flex justify-end gap-3">
+        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button
             onClick={onCancel}
             disabled={loading}
-            className="rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold transition hover:border-[#9fab9f] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex min-h-11 items-center justify-center rounded-md border border-[#cbd4cc] bg-white px-4 py-2 text-sm font-semibold transition hover:border-[#9fab9f] disabled:cursor-not-allowed disabled:opacity-60"
           >
             Cancel
           </button>
@@ -42,7 +42,7 @@ export default function DeleteHabitModal({
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="rounded-md border border-[#d9a7a7] bg-[#fff8f8] px-4 py-3 text-sm font-semibold text-[#8a2f2f] transition hover:border-[#bd7676] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex min-h-11 items-center justify-center rounded-md border border-[#d9a7a7] bg-[#fff8f8] px-4 py-3 text-sm font-semibold text-[#8a2f2f] transition hover:border-[#bd7676] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? <Loader size="sm" label="Deleting..." /> : "Delete"}
           </button>

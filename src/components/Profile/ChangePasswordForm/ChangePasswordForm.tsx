@@ -26,8 +26,8 @@ export default function ChangePasswordForm({
   onBack,
 }: Props) {
   return (
-    <div className="rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
-      <div className="flex items-center justify-between gap-3">
+    <div className="min-w-0 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-bold">Change password</h2>
 
@@ -38,7 +38,7 @@ export default function ChangePasswordForm({
 
         <button
           onClick={onBack}
-          className="rounded-md border border-[#cbd4cc] bg-white px-3 py-2 text-sm font-semibold transition hover:border-[#9fab9f]"
+          className="inline-flex min-h-11 items-center justify-center self-start rounded-md border border-[#cbd4cc] bg-white px-3 py-2 text-sm font-semibold transition hover:border-[#9fab9f]"
         >
           Back
         </button>

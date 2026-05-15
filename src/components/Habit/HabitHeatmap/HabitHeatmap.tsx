@@ -73,8 +73,8 @@ export default function HabitHeatmap({ checkinDays }: Props) {
         />
       </header>
 
-      <div className="mt-5 overflow-x-auto">
-        <div className="mx-auto flex w-fit flex-col gap-2">
+      <div className="mt-5 overflow-x-auto sm:overflow-x-auto">
+        <div className="flex w-fit flex-col gap-2 sm:mx-auto">
           <MonthLabels grid={grid} />
 
           <div className="flex gap-1">
@@ -89,7 +89,7 @@ export default function HabitHeatmap({ checkinDays }: Props) {
               ))}
             </div>
 
-            <div className="flex gap-1 mb-2">
+            <div className="mb-2 flex gap-1">
               {grid.map((week, wi) => (
                 <div key={wi} className="flex flex-col gap-1">
                   {week.map((cell) => (
@@ -124,7 +124,7 @@ export default function HabitHeatmap({ checkinDays }: Props) {
           </div>
         ) : (
           <p className="text-sm text-[#91a094]">
-            Click a day to see details.
+            Tap a day to see details.
           </p>
         )}
 

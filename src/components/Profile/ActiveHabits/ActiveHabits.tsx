@@ -13,7 +13,7 @@ type Props = {
 export default function ActiveHabits({ habits }: Props) {
   return (
     <section className="mt-6 rounded-lg border border-[#dce3dc] bg-white p-5 shadow-sm">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-bold">Active habits</h2>
 
@@ -24,7 +24,7 @@ export default function ActiveHabits({ habits }: Props) {
 
         <Link
           href="/dashboard"
-          className="rounded-md bg-[#17201b] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#28352d]"
+          className="inline-flex min-h-11 items-center justify-center self-start rounded-md bg-[#17201b] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#28352d]"
         >
           Manage
         </Link>
@@ -40,11 +40,11 @@ export default function ActiveHabits({ habits }: Props) {
             <Link
               key={habit.id}
               href={`/habit/${habit.id}`}
-              className="rounded-md border border-[#eef1ee] bg-[#fbfcfa] p-4 transition hover:border-[#cbd4cc] hover:bg-white"
+              className="min-w-0 rounded-md border border-[#eef1ee] bg-[#fbfcfa] p-4 transition hover:border-[#cbd4cc] hover:bg-white"
             >
-              <h3 className="font-semibold">{habit.title}</h3>
+              <h3 className="break-words font-semibold">{habit.title}</h3>
 
-              <p className="mt-1 text-sm text-[#6e7f72]">
+              <p className="mt-1 break-words text-sm leading-5 text-[#6e7f72]">
                 {habit.description || "No description yet."}
               </p>
             </Link>

@@ -18,7 +18,7 @@ export default function HabitDangerZone({ onDelete, deleting }: Props) {
         <button
           onClick={onDelete}
           disabled={deleting}
-          className="rounded-md border border-[#d9a7a7] bg-[#fff8f8] px-4 py-3 text-sm font-semibold text-[#8a2f2f] transition hover:border-[#bd7676] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-11 items-center justify-center rounded-md border border-[#d9a7a7] bg-[#fff8f8] px-4 py-3 text-sm font-semibold text-[#8a2f2f] transition hover:border-[#bd7676] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {deleting ? "Deleting..." : "Delete habit"}
         </button>

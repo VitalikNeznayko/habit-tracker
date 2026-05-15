@@ -169,25 +169,27 @@ export default function ProfilePage() {
 
   return (
     <main className="bg-[#f6f7f4] text-[#17201b]">
-      <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-8 sm:py-6">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase text-[#6e7f72]">
               Profile
             </p>
 
-            <h1 className="mt-2 text-4xl font-bold">Your habit space</h1>
+            <h1 className="mt-2 text-3xl font-bold leading-tight sm:text-4xl">
+              Your habit space
+            </h1>
           </div>
         </header>
 
-        <section className="mt-8 grid gap-4 lg:grid-cols-[360px_1fr]">
+        <section className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
           <ProfileCard
             email={profile.user.email}
             joinedAt={joinedAt}
             hasPassword={profile.user.hasPassword}
             onChangePassword={() => setMode("password")}
           />
-          <div className="space-y-3">
+          <div className="min-w-0 space-y-3">
             {mode === "overview" ? (
               <ProfileOverview
                 habitsCount={profile.habits.length}
